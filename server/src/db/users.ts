@@ -1,7 +1,4 @@
-import pg from 'pg';
-const { Pool } = pg;
-
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+import pool from './pool';
 
 async function createUser(
   email: string,
@@ -9,7 +6,7 @@ async function createUser(
   password_hash: string,
 ) {
   const text =
-    'INSERT INTO users(email, username, password_hash) VALUES($1, $2, $3) RETURNING *';
+    'INSERT INTO users (email, username, password_hash) VALUES ($1, $2, $3) RETURNING *';
   const values = [email, username, password_hash];
 
   const result = await pool.query(text, values);

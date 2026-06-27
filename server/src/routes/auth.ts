@@ -2,7 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import type { Request, Response } from 'express';
-import { createUser, getUserByEmail } from '../db';
+import { createUser, getUserByEmail } from '../db/users';
 
 const router = express.Router();
 
