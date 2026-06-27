@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: pact
+      POSTGRES_USER: pact
+      POSTGRES_DB: pact
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./server/src/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  postgres-data:
