@@ -2,13 +2,43 @@
 
 import { useState } from 'react';
 import { Handshake } from 'lucide-react';
+import { login, register } from '@/lib/api';
 
 function LoginPage() {
   const [mode, setMode] = useState<'signup' | 'login'>('login');
   const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const { token } = await login(email, password);
+      console.log(token);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleRegister(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const { token } = await register(name, username, email, password);
+      console.log(token);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className='bg-background-primary h-full'>
@@ -61,12 +91,22 @@ function LoginPage() {
                 : 'Welcome back!'}
             </h2>
             {mode === 'signup' ? (
-              <form className='flex flex-col justify-center gap-4'>
+              <form
+                className='flex flex-col justify-center gap-4'
+                onSubmit={handleRegister}
+              >
                 <input
                   type='text'
                   placeholder='Your name'
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  className='p-4 bg-background-card w-100 rounded-2xl text-text-label font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
+                />
+                <input
+                  type='text'
+                  placeholder='Username'
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className='p-4 bg-background-card w-100 rounded-2xl text-text-label font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
                 />
                 <input
@@ -98,7 +138,10 @@ function LoginPage() {
                 </button>
               </form>
             ) : (
-              <form className='flex flex-col justify-center gap-4'>
+              <form
+                className='flex flex-col justify-center gap-4'
+                onSubmit={handleLogin}
+              >
                 <input
                   type='text'
                   placeholder='Email address'

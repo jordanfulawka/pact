@@ -8,9 +8,10 @@ const router = express.Router();
 
 router.post('/register', async (req: Request, res: Response) => {
   try {
-    const { email, username, password } = req.body;
+    console.log('hello!');
+    const { name, username, email, password } = req.body;
     const password_hash = await bcrypt.hash(password, 12);
-    const newUser = await createUser(email, username, password_hash);
+    const newUser = await createUser(name, username, email, password_hash);
 
     if (!process.env.JWT_SECRET) {
       return res

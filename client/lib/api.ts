@@ -1,4 +1,9 @@
-async function register(email: string, username: string, password: string) {
+async function register(
+  name: string,
+  username: string,
+  email: string,
+  password: string,
+) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
     {
@@ -6,7 +11,7 @@ async function register(email: string, username: string, password: string) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, username, password }),
+      body: JSON.stringify({ name, username, email, password }),
     },
   );
   if (!response.ok) {

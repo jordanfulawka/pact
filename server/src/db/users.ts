@@ -1,13 +1,14 @@
 import pool from './pool';
 
 async function createUser(
-  email: string,
+  name: string,
   username: string,
+  email: string,
   password_hash: string,
 ) {
   const text =
-    'INSERT INTO users (email, username, password_hash) VALUES ($1, $2, $3) RETURNING *';
-  const values = [email, username, password_hash];
+    'INSERT INTO users (name, username, email, password_hash) VALUES ($1, $2, $3, $4) RETURNING *';
+  const values = [name, username, email, password_hash];
 
   const result = await pool.query(text, values);
   return result.rows[0];
