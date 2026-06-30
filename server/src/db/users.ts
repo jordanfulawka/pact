@@ -22,4 +22,12 @@ async function getUserByEmail(email: string) {
   return result.rows[0];
 }
 
-export { createUser, getUserByEmail };
+async function getUserByUsername(username: string) {
+  const text = 'SELECT * FROM users WHERE username = $1';
+  const values = [username];
+
+  const result = await pool.query(text, values);
+  return result.rows[0];
+}
+
+export { createUser, getUserByEmail, getUserByUsername };
