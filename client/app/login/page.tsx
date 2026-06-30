@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import { Handshake } from 'lucide-react';
-import { login, register } from '@/lib/api';
+import { login as apiLogin, register as apiRegister } from '@/lib/api';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthProvider';
 
 function LoginPage() {
   const [mode, setMode] = useState<'signup' | 'login'>('login');
@@ -14,16 +16,20 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const router = useRouter();
+  const { login, logout, user } = useAuth();
+
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     try {
       setLoading(true);
-      const { token } = await login(email, password);
+      const { token } = await apiLogin(email, password);
       console.log(token);
+      login(token);
+      setLoading(false);
+      router.push('/dashboard');
     } catch (err) {
       setError((err as Error).message);
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -31,12 +37,13 @@ function LoginPage() {
     e.preventDefault();
     try {
       setLoading(true);
-      const { token } = await register(name, username, email, password);
+      const { token } = await apiRegister(name, username, email, password);
+      login(token);
       console.log(token);
+      setLoading(false);
+      router.push('/dashboard');
     } catch (err) {
       setError((err as Error).message);
-    } finally {
-      setLoading(false);
     }
   }
 
