@@ -44,3 +44,23 @@ body {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
+
+input::-webkit-input-placeholder {
+  /* WebKit browsers */
+  color: #3d3633; /* 1em -> input font-size * 1 -> 40px * 1 = 40px */
+}
+
+input:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #3d3633;
+}
+
+input::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #3d3633;
+}
+
+input:-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  color: #3d3633;
+}
