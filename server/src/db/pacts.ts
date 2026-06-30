@@ -49,4 +49,52 @@ async function getPacts(userId: string) {
   return result.rows;
 }
 
-export { createPact, getPacts };
+async function getPendingPacts(userId: string) {
+  const text = `
+  SELECT 
+    p.*, 
+    u.name AS partner_name,
+    u.username AS partner_username,
+    u.avatar_url AS partner_avatar_url
+  FROM pacts p 
+  JOIN users u ON u.id = p.creator_id
+  WHERE partner_id = $1 and status = $2`;
+  const values = [userId, 'pending'];
+
+  const result = await pool.query(text, values);
+  return result.rows;
+}
+
+async function acceptPact(pactId: string, userId: string) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const acceptResult = await client.query(
+      'INSERT INTO pact_members (pact_id, user_id, role) VALUES ($1, $2, $3) RETURNING *',
+      [pactId, userId, 'partner'],
+    );
+    const accept = acceptResult.rows[0];
+
+    await client.query('UPDATE pacts SET status = $1 WHERE id = $2', [
+      'active',
+      pactId,
+    ]);
+    await client.query('COMMIT');
+    return accept;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+async function rejectPact(pactId: string) {
+  const text = 'DELETE FROM pacts WHERE id = $1';
+  const values = [pactId];
+
+  const result = await pool.query(text, values);
+  return result.rows[0];
+}
+
+export { createPact, getPacts, acceptPact, rejectPact, getPendingPacts };

@@ -74,4 +74,40 @@ async function getPacts(token: string) {
   return response.json();
 }
 
-export { register, login, handleCreatePact, getPacts };
+async function acceptPact(token: string, pactId: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/pacts/${pactId}/accept`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
+async function rejectPact(token: string, pactId: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/pacts/${pactId}/reject`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
+export { register, login, handleCreatePact, getPacts, acceptPact, rejectPact };

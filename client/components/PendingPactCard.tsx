@@ -1,6 +1,12 @@
 'use client';
 
-function PactCard({ pact }: { pact: any }) {
+import { usePact } from '@/contexts/PactProvider';
+import { acceptPact } from '@/lib/api';
+import { Check, X } from 'lucide-react';
+
+function PendingPactCard({ pact }: { pact: any }) {
+  const { acceptPact, rejectPact } = usePact();
+
   return (
     <div className='w-75 border border-primary-accent/20 rounded-xl bg-background-modal p-5'>
       <div className='flex items-center gap-3'>
@@ -17,9 +23,22 @@ function PactCard({ pact }: { pact: any }) {
         </div>
       </div>
       <div className='py-5 font-headings text-2xl'>{pact.title}</div>
-      {pact.status === 'pending' && <div>Await confirmation from partner</div>}
+      <div className='flex justify-around'>
+        <div
+          className='w-10 h-10 rounded-full bg-green-500 flex justify-center items-center'
+          onClick={() => acceptPact(pact.id)}
+        >
+          <Check />
+        </div>
+        <div
+          className='w-10 h-10 rounded-full bg-red-500 flex justify-center items-center'
+          onClick={() => rejectPact(pact.id)}
+        >
+          <X />
+        </div>
+      </div>
     </div>
   );
 }
 
-export default PactCard;
+export default PendingPactCard;

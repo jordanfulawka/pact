@@ -6,16 +6,18 @@ import PactCard from '@/components/PactCard';
 import { usePact } from '@/contexts/PactProvider';
 import { Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import PendingPactCard from '@/components/PendingPactCard';
 
 function DashboardPage() {
   const { user } = useAuth();
   const [showCreatePactModal, setShowCreatePactModal] = useState(false);
 
-  const { pacts } = usePact();
+  const { pacts, pendingPacts } = usePact();
 
   useEffect(() => {
     console.log(pacts);
-  }, [pacts]);
+    console.log(pendingPacts);
+  }, [pacts, pendingPacts]);
 
   return (
     <div className='bg-background-primary h-full'>
@@ -53,6 +55,16 @@ function DashboardPage() {
           ))}
         </div>
       </div>
+      {pendingPacts?.length > 0 && (
+        <div className='px-10 pt-20 font-semibold text-text-primary'>
+          <h3 className='text-2xl pb-10'>Pending Pacts</h3>
+          <div className='flex'>
+            {pendingPacts.map((pendingPact) => (
+              <PendingPactCard key={pendingPact.id} pact={pendingPact} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

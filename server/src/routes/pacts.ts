@@ -1,6 +1,12 @@
 import express, { Request, Response } from 'express';
 import { httpAuth } from '../middlewares/httpAuth';
-import { createPact, getPacts } from '../db/pacts';
+import {
+  acceptPact,
+  createPact,
+  getPacts,
+  getPendingPacts,
+  rejectPact,
+} from '../db/pacts';
 import { getUserByUsername } from '../db/users';
 
 const router = express.Router();
@@ -8,7 +14,8 @@ const router = express.Router();
 router.get('/', httpAuth, async (req: Request, res: Response) => {
   try {
     const pacts = await getPacts((req as any).user.id);
-    res.status(200).json({ pacts });
+    const pendingPacts = await getPendingPacts((req as any).user.id);
+    res.status(200).json({ pacts, pendingPacts });
   } catch (err) {
     res.status(500).json({ error: 'there was an error fetching pacts' });
   }
@@ -33,6 +40,32 @@ router.post('/', httpAuth, async (req: Request, res: Response) => {
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
+  }
+});
+
+router.patch('/:id/accept', httpAuth, async (req: Request, res: Response) => {
+  try {
+    const pactId = req.params.id;
+    if (typeof pactId !== 'string') {
+      return res.status(500).json({ error: 'server error' });
+    }
+    const result = await acceptPact(pactId, (req as any).user.id);
+    res.status(200).json({ result });
+  } catch (err) {
+    res.status(500).json({ error: 'server error' });
+  }
+});
+
+router.patch('/:id/reject', httpAuth, async (req: Request, res: Response) => {
+  try {
+    const pactId = req.params.id;
+    if (typeof pactId !== 'string') {
+      return res.status(500).json({ error: 'server error' });
+    }
+    const result = await rejectPact(pactId);
+    res.status(200).json({ result });
+  } catch (err) {
+    res.status(500).json({ error: 'server error' });
   }
 });
 
