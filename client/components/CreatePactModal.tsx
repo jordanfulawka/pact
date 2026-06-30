@@ -19,8 +19,10 @@ function CreatePactModal({ onClose }: { onClose: () => void }) {
     if (!token) return null;
     try {
       const result = await handleCreatePact(token, commitment, invite, endDate);
+      console.log(result);
       addPact(result);
       console.log(result);
+      onClose();
     } catch (err) {
       console.log(err);
     }

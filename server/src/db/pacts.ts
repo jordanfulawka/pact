@@ -16,8 +16,8 @@ async function createPact(
     const pact = pactResult.rows[0];
 
     await client.query(
-      'INSERT INTO pact_members (pact_id, user_id, role) VALUES ($1, $2, $4), ($1, $3, $5)',
-      [pact.id, creatorId, partnerId, 'creator', 'partner'],
+      'INSERT INTO pact_members (pact_id, user_id, role) VALUES ($1, $2, $3)',
+      [pact.id, creatorId, 'creator'],
     );
     await client.query('COMMIT');
     return pact;
@@ -30,8 +30,19 @@ async function createPact(
 }
 
 async function getPacts(userId: string) {
-  const text =
-    'SELECT * FROM pact_members JOIN pacts ON pact_members.pact_id = pacts.id WHERE pact_members.user_id = $1';
+  const text = `
+  SELECT 
+    p.*,
+    u.name AS partner_name,
+    u.username AS partner_username,
+    u.avatar_url AS partner_avatar_url
+  FROM pact_members pm
+  JOIN pacts p ON pm.pact_id = p.id
+  JOIN users u on u.id = CASE
+    WHEN p.creator_id = $1 THEN p.partner_id
+    ELSE p.creator_id
+  END
+  WHERE pm.user_id = $1`;
   const values = [userId];
 
   const result = await pool.query(text, values);

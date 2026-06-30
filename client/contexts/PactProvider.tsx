@@ -18,7 +18,8 @@ function PactProvider({ children }: { children: React.ReactNode }) {
   const { token } = useAuth();
 
   function addPact(pact: Pact) {
-    setPacts((prev) => [...prev, pact]);
+    setPacts((prev) => [...prev, pact.newPact]);
+    fetchPacts();
   }
 
   async function fetchPacts() {

@@ -1,9 +1,24 @@
-import { Pact } from '@/lib/types';
+'use client';
 
-function PactCard({ pact }: { pact: Pact }) {
+import { useEffect } from 'react';
+
+function PactCard({ pact }: { pact: any }) {
   return (
-    <div className='w-75 border border-white'>
-      <div></div>
+    <div className='w-75 border border-primary-accent/20 rounded-xl bg-background-modal p-5'>
+      <div className='flex items-center gap-3'>
+        <div className='bg-primary-accent w-10 h-10 rounded-full flex items-center justify-center text-text-primary font-bold'>
+          {pact?.partner_username?.split(' ').map((str: string) => (
+            <span key={str}>{str.charAt(0)}</span>
+          ))}
+        </div>
+        <div className='flex flex-col'>
+          <p className='text-text-tertiary text-xs tracking-widest'>
+            pact with
+          </p>
+          <p className='text-text-secondary'>{pact.partner_name}</p>
+        </div>
+      </div>
+      <div className='py-5 font-headings text-2xl'>{pact.title}</div>
     </div>
   );
 }

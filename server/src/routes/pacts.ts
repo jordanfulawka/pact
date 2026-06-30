@@ -8,7 +8,6 @@ const router = express.Router();
 router.get('/', httpAuth, async (req: Request, res: Response) => {
   try {
     const pacts = await getPacts((req as any).user.id);
-    console.log('the pacts are...' + pacts);
     res.status(200).json({ pacts });
   } catch (err) {
     res.status(500).json({ error: 'there was an error fetching pacts' });

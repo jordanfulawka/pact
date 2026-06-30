@@ -34,7 +34,7 @@ function DashboardPage() {
             <Plus /> New Pact
           </button>
           <div className='bg-primary-accent w-12 h-12 rounded-full flex items-center justify-center text-text-primary font-bold'>
-            {user?.name.split(' ').map((str) => (
+            {user?.name?.split(' ').map((str) => (
               <span key={str}>{str.charAt(0)}</span>
             ))}
           </div>
@@ -47,9 +47,11 @@ function DashboardPage() {
             • {pacts.length} active
           </span>
         </h3>
-        {pacts.map((pact) => (
-          <PactCard key={pact.id} pact={pact} />
-        ))}
+        <div className='flex'>
+          {pacts.map((pact) => (
+            <PactCard key={pact.id} pact={pact} />
+          ))}
+        </div>
       </div>
     </div>
   );
