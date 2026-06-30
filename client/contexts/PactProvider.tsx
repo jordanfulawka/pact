@@ -1,7 +1,9 @@
 'use client';
 
+import { getPacts } from '@/lib/api';
 import { Pact } from '@/lib/types';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { useAuth } from './AuthProvider';
 
 interface PactContextProps {
   pacts: Pact[];
@@ -13,9 +15,27 @@ const PactContext = createContext<PactContextProps | null>(null);
 function PactProvider({ children }: { children: React.ReactNode }) {
   const [pacts, setPacts] = useState<Pact[]>([]);
 
+  const { token } = useAuth();
+
   function addPact(pact: Pact) {
     setPacts((prev) => [...prev, pact]);
   }
+
+  async function fetchPacts() {
+    if (!token) return null;
+    try {
+      console.log(token);
+      const result = await getPacts(token);
+      setPacts(result.pacts);
+      console.log(result);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    fetchPacts();
+  }, [token]);
 
   return (
     <PactContext.Provider value={{ pacts, addPact }}>

@@ -26,6 +26,7 @@ CREATE TYPE pact_member_role AS ENUM ('creator', 'partner');
 CREATE TABLE pact_members (
   pact_id UUID NOT NULL REFERENCES pacts(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES users(id),
+  role pact_member_role,
   joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   PRIMARY KEY(pact_id, user_id)
 );

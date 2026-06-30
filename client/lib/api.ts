@@ -53,7 +53,6 @@ async function handleCreatePact(
     },
     body: JSON.stringify({ title, partnerUsername, endDate }),
   });
-  console.log('after fetch call in api.ts');
   if (!response.ok) {
     const data = await response.json();
     throw new Error(data.error);
@@ -61,4 +60,18 @@ async function handleCreatePact(
   return response.json();
 }
 
-export { register, login, handleCreatePact };
+async function getPacts(token: string) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pacts`, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
+export { register, login, handleCreatePact, getPacts };

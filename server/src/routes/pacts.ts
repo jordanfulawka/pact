@@ -1,9 +1,19 @@
 import express, { Request, Response } from 'express';
 import { httpAuth } from '../middlewares/httpAuth';
-import { createPact } from '../db/pacts';
+import { createPact, getPacts } from '../db/pacts';
 import { getUserByUsername } from '../db/users';
 
 const router = express.Router();
+
+router.get('/', httpAuth, async (req: Request, res: Response) => {
+  try {
+    const pacts = await getPacts((req as any).user.id);
+    console.log('the pacts are...' + pacts);
+    res.status(200).json({ pacts });
+  } catch (err) {
+    res.status(500).json({ error: 'there was an error fetching pacts' });
+  }
+});
 
 router.post('/', httpAuth, async (req: Request, res: Response) => {
   try {
