@@ -2,12 +2,15 @@
 
 import CreatePactModal from '@/components/CreatePactModal';
 import { useAuth } from '@/contexts/AuthProvider';
+import { usePact } from '@/contexts/PactProvider';
 import { Plus } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function DashboardPage() {
   const { user } = useAuth();
   const [showCreatePactModal, setShowCreatePactModal] = useState(false);
+
+  const { pacts } = usePact();
 
   return (
     <div className='bg-background-primary h-full'>

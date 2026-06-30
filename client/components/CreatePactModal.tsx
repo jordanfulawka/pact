@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthProvider';
+import { usePact } from '@/contexts/PactProvider';
 import { handleCreatePact } from '@/lib/api';
 import { Handshake, X } from 'lucide-react';
 import { useState } from 'react';
@@ -11,12 +12,14 @@ function CreatePactModal({ onClose }: { onClose: () => void }) {
   const [endDate, setEndDate] = useState('');
 
   const { token } = useAuth();
+  const { addPact } = usePact();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!token) return null;
     try {
       const result = await handleCreatePact(token, commitment, invite, endDate);
+      addPact(result);
       console.log(result);
     } catch (err) {
       console.log(err);
