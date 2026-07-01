@@ -36,7 +36,6 @@ CREATE TABLE check_ins(
   pact_id UUID NOT NULL REFERENCES pacts(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES users(id),
   checked_in_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  note TEXT,
   date DATE DEFAULT CURRENT_DATE,
   UNIQUE(pact_id, user_id, date)
 );

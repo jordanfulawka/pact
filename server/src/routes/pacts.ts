@@ -8,6 +8,7 @@ import {
   rejectPact,
 } from '../db/pacts';
 import { getUserByUsername } from '../db/users';
+import { checkIn, getCheckInForToday } from '../db/checkIns';
 
 const router = express.Router();
 
@@ -63,6 +64,33 @@ router.patch('/:id/reject', httpAuth, async (req: Request, res: Response) => {
       return res.status(500).json({ error: 'server error' });
     }
     const result = await rejectPact(pactId);
+    res.status(200).json({ result });
+  } catch (err) {
+    res.status(500).json({ error: 'server error' });
+  }
+});
+
+router.patch('/:id/checkIn', httpAuth, async (req: Request, res: Response) => {
+  try {
+    const pactId = req.params.id;
+    if (typeof pactId !== 'string') {
+      return res.status(500).json({ error: 'server error' });
+    }
+    const result = await checkIn(pactId, (req as any).user.id);
+    res.status(200).json({ result });
+  } catch (err) {
+    res.status(500).json({ error: 'server error' });
+  }
+});
+
+router.get('/:id/checkIn', httpAuth, async (req: Request, res: Response) => {
+  try {
+    const pactId = req.params.id;
+    const userId = req.query.userId;
+    if (typeof pactId !== 'string' || typeof userId !== 'string') {
+      return res.status(500).json({ error: 'server error' });
+    }
+    const result = await getCheckInForToday(pactId, userId);
     res.status(200).json({ result });
   } catch (err) {
     res.status(500).json({ error: 'server error' });

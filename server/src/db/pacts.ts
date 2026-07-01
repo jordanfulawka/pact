@@ -30,10 +30,19 @@ async function createPact(
   }
 }
 
+async function getPactById(pactId: string) {
+  const text = 'SELECT * FROM pacts WHERE id = $1';
+  const values = [pactId];
+
+  const result = await pool.query(text, values);
+  return result.rows[0];
+}
+
 async function getPacts(userId: string) {
   const text = `
   SELECT 
     p.*,
+    CASE WHEN p.creator_id = $1 THEN p.partner_id ELSE p.creator_id END AS other_user_id,
     u.name AS partner_name,
     u.username AS partner_username,
     u.avatar_url AS partner_avatar_url,
@@ -104,4 +113,11 @@ async function rejectPact(pactId: string) {
   return result.rows[0];
 }
 
-export { createPact, getPacts, acceptPact, rejectPact, getPendingPacts };
+export {
+  createPact,
+  getPacts,
+  acceptPact,
+  rejectPact,
+  getPendingPacts,
+  getPactById,
+};

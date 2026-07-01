@@ -110,4 +110,48 @@ async function rejectPact(token: string, pactId: string) {
   return response.json();
 }
 
-export { register, login, handleCreatePact, getPacts, acceptPact, rejectPact };
+async function checkIn(token: string, pactId: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/pacts/${pactId}/checkIn`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
+async function getCheckIn(token: string, pactId: string, userId: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/pacts/${pactId}/checkIn?userId=${userId}`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
+export {
+  register,
+  login,
+  handleCreatePact,
+  getPacts,
+  acceptPact,
+  rejectPact,
+  checkIn,
+  getCheckIn,
+};
