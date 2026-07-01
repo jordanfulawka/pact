@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthProvider';
-import { getCheckIn } from '@/lib/api';
+import { checkIn, getCheckIn } from '@/lib/api';
 import { Pact } from '@/lib/types';
 import { Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -24,6 +24,17 @@ function PactCard({ pact }: { pact: Pact }) {
       pact.other_user_id,
     );
     setPartnerCheckedIn(!!partnerCheckIn);
+  }
+
+  async function handleCheckIn() {
+    try {
+      if (!token) return null;
+      await checkIn(token, pact.id);
+      setCheckedIn(true);
+      getCheckIns();
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   useEffect(() => {
@@ -113,6 +124,22 @@ function PactCard({ pact }: { pact: Pact }) {
               </div>
             </div>
           </div>
+          {checkedIn ? (
+            <button
+              className='bg-text-label w-full p-2 mt-5 rounded-md cursor-not-allowed font-light'
+              onClick={handleCheckIn}
+              disabled={checkedIn}
+            >
+              Already checked in today
+            </button>
+          ) : (
+            <button
+              className='bg-primary-accent w-full p-2 mt-5 rounded-md'
+              onClick={handleCheckIn}
+            >
+              Check In
+            </button>
+          )}
         </div>
       )}
     </div>

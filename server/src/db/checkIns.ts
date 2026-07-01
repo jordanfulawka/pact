@@ -1,11 +1,39 @@
 import pool from './pool';
+import { incrementStreak } from './streaks';
 
 async function checkIn(pactId: string, userId: string) {
-  const text = 'INSERT INTO check_ins (pact_id, user_id) VALUES ($1, $2)';
-  const values = [pactId, userId];
+  const client = await pool.connect();
 
-  const result = await pool.query(text, values);
-  return result.rows[0];
+  try {
+    await client.query('BEGIN');
+    const insertResult = await client.query(
+      'INSERT INTO check_ins (pact_id, user_id) VALUES ($1, $2) RETURNING *',
+      [pactId, userId],
+    );
+    const newCheckIn = insertResult.rows[0];
+
+    const countResult = await client.query(
+      `
+      SELECT
+        (SELECT COUNT(*) FROM pact_members WHERE pact_id = $1) AS member_count,
+        (SELECT COUNT(DISTINCT user_id) FROM check_ins WHERE pact_id = $1 AND date = CURRENT_DATE) as checked_in_count`,
+      [pactId],
+    );
+
+    const { member_count, checked_in_count } = countResult.rows[0];
+
+    if (member_count === checked_in_count) {
+      await incrementStreak(client, pactId);
+    }
+
+    await client.query('COMMIT');
+    return newCheckIn;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
 }
 
 async function getCheckInForToday(pactId: string, userId: string) {
