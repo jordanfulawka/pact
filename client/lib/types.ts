@@ -17,6 +17,8 @@ interface Pact {
   start_date: string;
   status: string;
   title: string;
+  current_streak: number;
+  longest_streak: number;
 }
 
 export type { User, Pact };

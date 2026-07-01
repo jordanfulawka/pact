@@ -12,7 +12,7 @@ import { useAuth } from './AuthProvider';
 interface PactContextProps {
   pacts: Pact[];
   pendingPacts: Pact[];
-  addPact: (pact: Pact) => void;
+  addPact: () => void;
   acceptPact: (pactId: string) => void;
   rejectPact: (pactId: string) => void;
 }
@@ -25,8 +25,7 @@ function PactProvider({ children }: { children: React.ReactNode }) {
 
   const { token } = useAuth();
 
-  function addPact(pact: Pact) {
-    setPacts((prev) => [...prev, pact]);
+  function addPact() {
     fetchPacts();
   }
 
@@ -51,11 +50,9 @@ function PactProvider({ children }: { children: React.ReactNode }) {
   async function fetchPacts() {
     if (!token) return null;
     try {
-      console.log(token);
       const result = await getPacts(token);
       setPacts(result.pacts);
       setPendingPacts(result.pendingPacts);
-      console.log(result);
     } catch (err) {
       console.log(err);
     }

@@ -1,4 +1,5 @@
 import pool from './pool';
+import { createStreak } from './streaks';
 
 async function createPact(
   title: string,
@@ -35,9 +36,12 @@ async function getPacts(userId: string) {
     p.*,
     u.name AS partner_name,
     u.username AS partner_username,
-    u.avatar_url AS partner_avatar_url
+    u.avatar_url AS partner_avatar_url,
+    s.current_streak,
+    s.longest_streak
   FROM pact_members pm
   JOIN pacts p ON pm.pact_id = p.id
+  LEFT JOIN streaks s ON p.id = s.pact_id
   JOIN users u on u.id = CASE
     WHEN p.creator_id = $1 THEN p.partner_id
     ELSE p.creator_id
@@ -79,6 +83,9 @@ async function acceptPact(pactId: string, userId: string) {
       'active',
       pactId,
     ]);
+
+    await createStreak(client, pactId);
+
     await client.query('COMMIT');
     return accept;
   } catch (err) {
