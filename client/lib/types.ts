@@ -7,13 +7,16 @@ interface User {
 
 interface Pact {
   id: string;
-  title: string;
-  status: string;
-  creator_id: string;
-  partner_id: string;
-  start_date: string;
-  end_date: string;
   created_at: string;
+  creator_id: string;
+  end_date: string;
+  partner_avatar_url: string | null;
+  partner_id: string;
+  partner_name: string | null;
+  partner_username: string | null;
+  start_date: string;
+  status: string;
+  title: string;
 }
 
 export type { User, Pact };

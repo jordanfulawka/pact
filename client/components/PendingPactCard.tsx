@@ -1,10 +1,10 @@
 'use client';
 
 import { usePact } from '@/contexts/PactProvider';
-import { acceptPact } from '@/lib/api';
+import { Pact } from '@/lib/types';
 import { Check, X } from 'lucide-react';
 
-function PendingPactCard({ pact }: { pact: any }) {
+function PendingPactCard({ pact }: { pact: Pact }) {
   const { acceptPact, rejectPact } = usePact();
 
   return (

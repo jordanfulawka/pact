@@ -21,12 +21,12 @@ const PactContext = createContext<PactContextProps | null>(null);
 
 function PactProvider({ children }: { children: React.ReactNode }) {
   const [pacts, setPacts] = useState<Pact[]>([]);
-  const [pendingPacts, setPendingPacts] = useState<Pact[]>(null);
+  const [pendingPacts, setPendingPacts] = useState<Pact[]>([]);
 
   const { token } = useAuth();
 
-  function addPact(pact: any) {
-    setPacts((prev) => [...prev, pact.newPact]);
+  function addPact(pact: Pact) {
+    setPacts((prev) => [...prev, pact]);
     fetchPacts();
   }
 

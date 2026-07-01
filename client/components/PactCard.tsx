@@ -1,6 +1,8 @@
 'use client';
 
-function PactCard({ pact }: { pact: any }) {
+import { Pact } from '@/lib/types';
+
+function PactCard({ pact }: { pact: Pact }) {
   return (
     <div className='w-75 border border-primary-accent/20 rounded-xl bg-background-modal p-5'>
       <div className='flex items-center gap-3'>

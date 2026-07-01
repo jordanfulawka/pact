@@ -46,10 +46,10 @@ function DashboardPage() {
         <h3 className='text-2xl pb-10'>
           Your pacts{' '}
           <span className='text-sm font-body text-text-secondary'>
-            • {pacts.length} active
+            • {pacts.filter((pact) => pact.status === 'active').length} active
           </span>
         </h3>
-        <div className='flex'>
+        <div className='flex flex-wrap gap-10 max-w-[90%]'>
           {pacts.map((pact) => (
             <PactCard key={pact.id} pact={pact} />
           ))}
