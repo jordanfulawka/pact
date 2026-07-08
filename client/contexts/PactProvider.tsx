@@ -6,8 +6,9 @@ import {
   rejectPact as apiRejectPact,
 } from '@/lib/api';
 import { Pact } from '@/lib/types';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useAuth } from './AuthProvider';
+import { io, Socket } from 'socket.io-client';
 
 interface PactContextProps {
   pacts: Pact[];
@@ -22,8 +23,22 @@ const PactContext = createContext<PactContextProps | null>(null);
 function PactProvider({ children }: { children: React.ReactNode }) {
   const [pacts, setPacts] = useState<Pact[]>([]);
   const [pendingPacts, setPendingPacts] = useState<Pact[]>([]);
+  const socketRef = useRef<Socket | null>(null);
+  const { token, user } = useAuth();
 
-  const { token } = useAuth();
+  useEffect(() => {
+    if (user?.id) {
+      socketRef.current = io('http://localhost:3001');
+    }
+
+    if (socketRef.current) {
+      socketRef.current.on('connect', () => {
+        console.log('hi world');
+      });
+    }
+
+    return () => socketRef.current?.disconnect();
+  }, [token, user?.id]);
 
   function addPact() {
     fetchPacts();
