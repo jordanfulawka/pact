@@ -28,7 +28,11 @@ function PactProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (user?.id) {
-      socketRef.current = io('http://localhost:3001');
+      socketRef.current = io(`${process.env.NEXT_PUBLIC_API_URL}`, {
+        auth: {
+          token,
+        },
+      });
     }
 
     if (socketRef.current) {
@@ -37,8 +41,11 @@ function PactProvider({ children }: { children: React.ReactNode }) {
       });
     }
 
-    return () => socketRef.current?.disconnect();
-  }, [token, user?.id]);
+    return () => {
+      socketRef.current?.disconnect();
+      socketRef.current = null;
+    };
+  }, [user?.id, token]);
 
   function addPact() {
     fetchPacts();

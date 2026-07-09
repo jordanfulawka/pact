@@ -4,6 +4,7 @@ import authRouter from './routes/auth';
 import pactRouter from './routes/pacts';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import { socketAuth } from './middlewares/socketAuth';
 
 const app = express();
 
@@ -24,5 +25,7 @@ const io = new Server(httpServer, {
 io.on('connection', (socket) => {
   console.log('hiii')!;
 });
+
+io.use(socketAuth);
 
 export default httpServer;
