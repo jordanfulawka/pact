@@ -48,7 +48,7 @@ function LoginPage() {
   }
 
   return (
-    <div className='bg-background-primary h-full'>
+    <div className='bg-background-primary min-h-screen'>
       <div className='flex h-full justify-between'>
         <div className='flex-1 flex flex-col max-w-150'>
           <div className='flex items-center gap-4 pl-20 p-5'>

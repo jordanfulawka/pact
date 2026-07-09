@@ -11,7 +11,7 @@ function CreatePactModal({
   onSuccess,
 }: {
   onClose: () => void;
-  onSuccess: (partnerId: string) => void;
+  onSuccess: (partnerId: string, pactId: string) => void;
 }) {
   const [commitment, setCommitment] = useState('');
   const [invite, setInvite] = useState('');
@@ -30,10 +30,9 @@ function CreatePactModal({
         invite,
         endDate,
       );
-      console.log(newPact);
       addPact();
       onClose();
-      onSuccess(newPact.partner_id);
+      onSuccess(newPact.partner_id, newPact.id);
     } catch (err) {
       console.log(err);
     }

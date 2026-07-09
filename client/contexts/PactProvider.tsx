@@ -29,12 +29,21 @@ function PactProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!socket) return;
-    socket.on('refresh_pacts', () => {
-      console.log('new pact created!');
+    socket.on('pact_created', () => {
+      fetchPacts();
+    });
+    socket.on('pact_accepted', () => {
+      console.log('pact_accepted');
+      fetchPacts();
+    });
+    socket.on('pact_rejected', () => {
+      console.log('pact_rejected');
       fetchPacts();
     });
     return () => {
-      socket.off('refresh_pacts');
+      socket.off('pact_created');
+      socket.off('pact_accepted');
+      socket.off('pact_rejected');
     };
   }, [socket]);
 
@@ -44,8 +53,10 @@ function PactProvider({ children }: { children: React.ReactNode }) {
 
   async function acceptPact(pactId: string) {
     if (!token) return null;
+    if (!socket) return null;
     try {
       await apiAcceptPact(token, pactId);
+      socket?.emit('pact_accepted', pactId);
     } catch (err) {
       console.log(err);
     }
@@ -53,8 +64,10 @@ function PactProvider({ children }: { children: React.ReactNode }) {
 
   async function rejectPact(pactId: string) {
     if (!token) return null;
+    if (!socket) return null;
     try {
       await apiRejectPact(token, pactId);
+      socket?.emit('pact_rejected', pactId);
     } catch (err) {
       console.log(err);
     }

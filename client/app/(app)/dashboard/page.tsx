@@ -14,15 +14,15 @@ function DashboardPage() {
   const { socket } = useSocket();
   const [showCreatePactModal, setShowCreatePactModal] = useState(false);
 
-  const { pacts, pendingPacts, fetchPacts } = usePact();
+  const { pacts, pendingPacts } = usePact();
 
   useEffect(() => {
     console.log(pacts);
     console.log(pendingPacts);
   }, [pacts, pendingPacts]);
 
-  function emitNewPact(partnerId: string) {
-    socket?.emit('refresh_pacts', partnerId);
+  function emitNewPact(partnerId: string, pactId: string) {
+    socket?.emit('pact_created', { partnerId, pactId });
   }
 
   return (
