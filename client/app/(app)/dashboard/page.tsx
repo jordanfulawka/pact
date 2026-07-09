@@ -22,11 +22,11 @@ function DashboardPage() {
   }, [pacts, pendingPacts]);
 
   function emitNewPact(partnerId: string) {
-    socket?.emit('new_pact_created', partnerId);
+    socket?.emit('refresh_pacts', partnerId);
   }
 
   return (
-    <div className='bg-background-primary h-full'>
+    <div className='bg-background-primary min-h-screen'>
       {showCreatePactModal && (
         <CreatePactModal
           onClose={() => setShowCreatePactModal(false)}
@@ -65,9 +65,9 @@ function DashboardPage() {
         </div>
       </div>
       {pendingPacts?.length > 0 && (
-        <div className='px-10 pt-20 font-semibold text-text-primary'>
+        <div className='px-10 pt-20 font-semibold text-text-primary pb-5'>
           <h3 className='text-2xl pb-10'>Pending Pacts</h3>
-          <div className='flex'>
+          <div className='flex flex-wrap gap-10'>
             {pendingPacts.map((pendingPact) => (
               <PendingPactCard key={pendingPact.id} pact={pendingPact} />
             ))}

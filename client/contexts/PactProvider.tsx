@@ -29,12 +29,12 @@ function PactProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!socket) return;
-    socket.on('new_pact_created', () => {
+    socket.on('refresh_pacts', () => {
       console.log('new pact created!');
       fetchPacts();
     });
     return () => {
-      socket.off('new_pact_created');
+      socket.off('refresh_pacts');
     };
   }, [socket]);
 

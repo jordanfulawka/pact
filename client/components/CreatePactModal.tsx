@@ -2,10 +2,9 @@
 
 import { useAuth } from '@/contexts/AuthProvider';
 import { usePact } from '@/contexts/PactProvider';
-import { useSocket } from '@/contexts/SocketProvider';
 import { handleCreatePact } from '@/lib/api';
 import { Handshake, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 function CreatePactModal({
   onClose,
