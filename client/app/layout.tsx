@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Space_Grotesk, DM_Sans } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthProvider';
 import { PactProvider } from '@/contexts/PactProvider';
+import { SocketProvider } from '@/contexts/SocketProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -41,7 +42,9 @@ export default function RootLayout({
     >
       <body className='h-full flex flex-col'>
         <AuthProvider>
-          <PactProvider>{children}</PactProvider>
+          <SocketProvider>
+            <PactProvider>{children}</PactProvider>
+          </SocketProvider>
         </AuthProvider>
       </body>
     </html>

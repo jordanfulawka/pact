@@ -2,11 +2,18 @@
 
 import { useAuth } from '@/contexts/AuthProvider';
 import { usePact } from '@/contexts/PactProvider';
+import { useSocket } from '@/contexts/SocketProvider';
 import { handleCreatePact } from '@/lib/api';
 import { Handshake, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-function CreatePactModal({ onClose }: { onClose: () => void }) {
+function CreatePactModal({
+  onClose,
+  onSuccess,
+}: {
+  onClose: () => void;
+  onSuccess: (partnerId: string) => void;
+}) {
   const [commitment, setCommitment] = useState('');
   const [invite, setInvite] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -18,9 +25,16 @@ function CreatePactModal({ onClose }: { onClose: () => void }) {
     e.preventDefault();
     if (!token) return null;
     try {
-      await handleCreatePact(token, commitment, invite, endDate);
+      const { newPact } = await handleCreatePact(
+        token,
+        commitment,
+        invite,
+        endDate,
+      );
+      console.log(newPact);
       addPact();
       onClose();
+      onSuccess(newPact.partner_id);
     } catch (err) {
       console.log(err);
     }

@@ -5,6 +5,7 @@ import pactRouter from './routes/pacts';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { socketAuth } from './middlewares/socketAuth';
+import { registerHandlers } from './handlers/socket';
 
 const app = express();
 
@@ -17,15 +18,12 @@ app.use('/api/pacts', pactRouter);
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: '*',
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   },
 });
 
-io.on('connection', (socket) => {
-  console.log('hiii')!;
-});
-
 io.use(socketAuth);
+registerHandlers(io);
 
 export default httpServer;

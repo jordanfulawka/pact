@@ -7,22 +7,31 @@ import { usePact } from '@/contexts/PactProvider';
 import { Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import PendingPactCard from '@/components/PendingPactCard';
+import { useSocket } from '@/contexts/SocketProvider';
 
 function DashboardPage() {
   const { user } = useAuth();
+  const { socket } = useSocket();
   const [showCreatePactModal, setShowCreatePactModal] = useState(false);
 
-  const { pacts, pendingPacts } = usePact();
+  const { pacts, pendingPacts, fetchPacts } = usePact();
 
   useEffect(() => {
     console.log(pacts);
     console.log(pendingPacts);
   }, [pacts, pendingPacts]);
 
+  function emitNewPact(partnerId: string) {
+    socket?.emit('new_pact_created', partnerId);
+  }
+
   return (
     <div className='bg-background-primary h-full'>
       {showCreatePactModal && (
-        <CreatePactModal onClose={() => setShowCreatePactModal(false)} />
+        <CreatePactModal
+          onClose={() => setShowCreatePactModal(false)}
+          onSuccess={emitNewPact}
+        />
       )}
       <div className='flex p-10 items-center justify-between'>
         <h2 className='text-text-primary font-headings text-3xl font-semibold'>

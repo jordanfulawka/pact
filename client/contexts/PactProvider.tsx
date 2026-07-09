@@ -6,9 +6,9 @@ import {
   rejectPact as apiRejectPact,
 } from '@/lib/api';
 import { Pact } from '@/lib/types';
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from './AuthProvider';
-import { io, Socket } from 'socket.io-client';
+import { useSocket } from './SocketProvider';
 
 interface PactContextProps {
   pacts: Pact[];
@@ -16,6 +16,7 @@ interface PactContextProps {
   addPact: () => void;
   acceptPact: (pactId: string) => void;
   rejectPact: (pactId: string) => void;
+  fetchPacts: () => void;
 }
 
 const PactContext = createContext<PactContextProps | null>(null);
@@ -23,29 +24,19 @@ const PactContext = createContext<PactContextProps | null>(null);
 function PactProvider({ children }: { children: React.ReactNode }) {
   const [pacts, setPacts] = useState<Pact[]>([]);
   const [pendingPacts, setPendingPacts] = useState<Pact[]>([]);
-  const socketRef = useRef<Socket | null>(null);
   const { token, user } = useAuth();
+  const { socket } = useSocket();
 
   useEffect(() => {
-    if (user?.id) {
-      socketRef.current = io(`${process.env.NEXT_PUBLIC_API_URL}`, {
-        auth: {
-          token,
-        },
-      });
-    }
-
-    if (socketRef.current) {
-      socketRef.current.on('connect', () => {
-        console.log('hi world');
-      });
-    }
-
+    if (!socket) return;
+    socket.on('new_pact_created', () => {
+      console.log('new pact created!');
+      fetchPacts();
+    });
     return () => {
-      socketRef.current?.disconnect();
-      socketRef.current = null;
+      socket.off('new_pact_created');
     };
-  }, [user?.id, token]);
+  }, [socket]);
 
   function addPact() {
     fetchPacts();
@@ -86,7 +77,14 @@ function PactProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <PactContext.Provider
-      value={{ pacts, pendingPacts, addPact, acceptPact, rejectPact }}
+      value={{
+        pacts,
+        pendingPacts,
+        addPact,
+        acceptPact,
+        rejectPact,
+        fetchPacts,
+      }}
     >
       {children}
     </PactContext.Provider>
