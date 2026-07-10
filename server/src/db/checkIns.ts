@@ -16,14 +16,22 @@ async function checkIn(pactId: string, userId: string) {
       `
       SELECT
         (SELECT COUNT(*) FROM pact_members WHERE pact_id = $1) AS member_count,
-        (SELECT COUNT(DISTINCT user_id) FROM check_ins WHERE pact_id = $1 AND date = CURRENT_DATE) as checked_in_count`,
+        (SELECT COUNT(DISTINCT user_id) FROM check_ins WHERE pact_id = $1 AND date = CURRENT_DATE) as checked_in_count,
+        (SELECT end_date::date FROM pacts WHERE id = $1) AS end_date`,
       [pactId],
     );
 
-    const { member_count, checked_in_count } = countResult.rows[0];
+    const { member_count, checked_in_count, end_date } = countResult.rows[0];
 
     if (member_count === checked_in_count) {
       await incrementStreak(client, pactId);
+
+      if (end_date && new Date() >= end_date) {
+        await client.query(
+          `UPDATE pacts SET status='completed' WHERE id = $1 and status = 'active'`,
+          [pactId],
+        );
+      }
     }
 
     await client.query('COMMIT');

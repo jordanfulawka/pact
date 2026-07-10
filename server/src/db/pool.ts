@@ -1,5 +1,9 @@
 import pg from 'pg';
-const { Pool } = pg;
+const { Pool, types } = pg;
+
+// Return DATE columns as plain 'YYYY-MM-DD' strings instead of node-postgres's
+// default UTC-midnight Date object, which shifts a day when re-parsed client-side.
+types.setTypeParser(types.builtins.DATE, (val: string) => val);
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 

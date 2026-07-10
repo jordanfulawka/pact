@@ -62,10 +62,16 @@ function PactCard({ pact }: { pact: Pact }) {
     getCheckIns();
   }, []);
 
+  function parseDateOnly(date: string) {
+    const [year, month, day] = date.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  }
+
   function daysUntilDate(date: string) {
-    const start = new Date();
-    const end = new Date(date);
-    const timeDifference: any = end - start;
+    const today = new Date();
+    const start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const end = parseDateOnly(date);
+    const timeDifference = end.getTime() - start.getTime();
     const daysDifference = timeDifference / (1000 * 3600 * 24);
     return Math.floor(daysDifference);
   }
@@ -100,7 +106,7 @@ function PactCard({ pact }: { pact: Pact }) {
             <div>
               <p>
                 Ends{' '}
-                {new Date(pact.end_date).toLocaleDateString('en-US', {
+                {parseDateOnly(pact.end_date).toLocaleDateString('en-US', {
                   month: 'long',
                   day: 'numeric',
                 })}

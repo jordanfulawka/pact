@@ -113,6 +113,14 @@ async function rejectPact(pactId: string) {
   return result.rows[0];
 }
 
+async function updatePactStatus(pactId: string) {
+  const text = 'UPDATE pacts SET status = $1 WHERE id = $2';
+  const values = ['completed', pactId];
+
+  const result = await pool.query(text, values);
+  return result.rows[0];
+}
+
 export {
   createPact,
   getPacts,
@@ -120,4 +128,5 @@ export {
   rejectPact,
   getPendingPacts,
   getPactById,
+  updatePactStatus,
 };

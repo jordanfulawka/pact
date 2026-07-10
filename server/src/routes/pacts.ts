@@ -25,18 +25,14 @@ router.get('/', httpAuth, async (req: Request, res: Response) => {
 router.post('/', httpAuth, async (req: Request, res: Response) => {
   try {
     const { title, partnerUsername, endDate } = req.body;
-    if (!endDate) throw new Error('End date is required');
-    const parsedEndDate = new Date(endDate).toISOString();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(endDate)) {
+      throw new Error('End date must be in YYYY-MM-DD format');
+    }
     const userId = (req as any).user.id;
     const partnerId = await getUserByUsername(partnerUsername);
     if (!partnerId) throw new Error('Partner not found');
 
-    const newPact = await createPact(
-      title,
-      userId,
-      partnerId.id,
-      parsedEndDate,
-    );
+    const newPact = await createPact(title, userId, partnerId.id, endDate);
     res.status(201).json({ newPact });
   } catch (err) {
     console.log(err);
