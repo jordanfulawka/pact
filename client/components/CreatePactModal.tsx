@@ -16,6 +16,7 @@ function CreatePactModal({
   const [commitment, setCommitment] = useState('');
   const [invite, setInvite] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [error, setError] = useState('');
 
   const { token } = useAuth();
   const { addPact } = usePact();
@@ -35,6 +36,10 @@ function CreatePactModal({
       onSuccess(newPact.partner_id, newPact.id);
     } catch (err) {
       console.log(err);
+      setError('Partner not found. Please try a different username');
+      setTimeout(() => {
+        setError('');
+      }, 2000);
     }
   }
 
@@ -99,6 +104,7 @@ function CreatePactModal({
                 className='p-4 bg-text-tertiary/40 w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
               />
             </div>
+            {error && <p className='text-red-500'>{error}</p>}
             <button className='bg-primary-accent w-100 p-3 text-text-primary font-semibold rounded-2xl'>
               Send Pact Invite
             </button>
