@@ -26,7 +26,11 @@ async function checkIn(pactId: string, userId: string) {
     if (member_count === checked_in_count) {
       await incrementStreak(client, pactId);
 
-      if (end_date && new Date() >= end_date) {
+      const isEndDateToday = await client.query('SELECT CURRENT_DATE >= $1', [
+        end_date,
+      ]);
+
+      if (end_date && isEndDateToday) {
         await client.query(
           `UPDATE pacts SET status='completed' WHERE id = $1 and status = 'active'`,
           [pactId],

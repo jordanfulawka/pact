@@ -48,7 +48,7 @@ function PactCard({ pact }: { pact: Pact }) {
 
     function handlePactCheckin() {
       getCheckIns();
-      // fetchPacts();
+      fetchPacts();
     }
 
     socket.on('pact_checkin', handlePactCheckin);
@@ -69,7 +69,11 @@ function PactCard({ pact }: { pact: Pact }) {
 
   function daysUntilDate(date: string) {
     const today = new Date();
-    const start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const start = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+    );
     const end = parseDateOnly(date);
     const timeDifference = end.getTime() - start.getTime();
     const daysDifference = timeDifference / (1000 * 3600 * 24);
