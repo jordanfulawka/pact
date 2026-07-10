@@ -30,17 +30,13 @@ function PendingPactCard({ pact }: { pact: Pact }) {
       <div className='flex justify-around'>
         <div
           className='w-10 h-10 rounded-full bg-green-500 flex justify-center items-center'
-          onClick={() => {
-            acceptPact(pact.id);
-          }}
+          onClick={() => acceptPact(pact.id)}
         >
           <Check />
         </div>
         <div
           className='w-10 h-10 rounded-full bg-red-500 flex justify-center items-center'
-          onClick={() => {
-            rejectPact(pact.id);
-          }}
+          onClick={() => rejectPact(pact.id)}
         >
           <X />
         </div>

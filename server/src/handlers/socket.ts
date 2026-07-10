@@ -27,6 +27,9 @@ function registerHandlers(io: Server) {
       socket.join(`pact:${pactId}`);
       io.to(`pact:${pactId}`).emit('pact_rejected');
     });
+    socket.on('pact_checkin', (pactId) => {
+      io.to(`pact:${pactId}`).emit('pact_checkin');
+    });
   });
 }
 

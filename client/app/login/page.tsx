@@ -49,7 +49,7 @@ function LoginPage() {
 
   return (
     <div className='bg-background-primary min-h-screen'>
-      <div className='flex h-full justify-between'>
+      <div className='flex min-h-screen justify-between'>
         <div className='flex-1 flex flex-col max-w-150'>
           <div className='flex items-center gap-4 pl-20 p-5'>
             <div className='p-2 w-fit bg-primary-accent rounded-lg '>
@@ -91,7 +91,7 @@ function LoginPage() {
               </button>
             </div>
           </div>
-          <div className=' flex-3 flex flex-col pb-30'>
+          <div className=' flex-3 flex flex-col justify-center pb-30'>
             <h2 className='text-text-primary font-headings text-2xl font-semibold mb-10'>
               {mode === 'signup'
                 ? 'Start your first pact today'
@@ -107,35 +107,35 @@ function LoginPage() {
                   placeholder='Your name'
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className='p-4 bg-background-card w-100 rounded-2xl text-text-label font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
+                  className='p-4 bg-background-card w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
                 />
                 <input
                   type='text'
                   placeholder='Username'
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className='p-4 bg-background-card w-100 rounded-2xl text-text-label font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
+                  className='p-4 bg-background-card w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
                 />
                 <input
                   type='text'
                   placeholder='Email address'
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className='p-4 bg-background-card w-100 rounded-2xl text-text-label font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
+                  className='p-4 bg-background-card w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
                 />
                 <input
                   type='password'
                   placeholder='Password'
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className='p-4 bg-background-card w-100 rounded-2xl text-text-label font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
+                  className='p-4 bg-background-card w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
                 />
                 <input
                   type='password'
                   placeholder='Confirm password'
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className='p-4 bg-background-card w-100 rounded-2xl text-text-label font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
+                  className='p-4 bg-background-card w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
                 />
                 <button
                   type='submit'
@@ -154,14 +154,14 @@ function LoginPage() {
                   placeholder='Email address'
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className='p-4 bg-background-card w-100 rounded-2xl text-text-label font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
+                  className='p-4 bg-background-card w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent '
                 />
                 <input
                   type='password'
                   placeholder='Password'
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className='p-4 bg-background-card w-100 rounded-2xl text-text-label font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
+                  className='p-4 bg-background-card w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
                 />
                 <button
                   type='submit'

@@ -1,6 +1,8 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthProvider';
+import { usePact } from '@/contexts/PactProvider';
+import { useSocket } from '@/contexts/SocketProvider';
 import { checkIn, getCheckIn } from '@/lib/api';
 import { Pact } from '@/lib/types';
 import { Check } from 'lucide-react';
@@ -11,6 +13,8 @@ function PactCard({ pact }: { pact: Pact }) {
   const [partnerCheckedIn, setPartnerCheckedIn] = useState(false);
 
   const { token, user } = useAuth();
+  const { socket } = useSocket();
+  const { fetchPacts } = usePact();
 
   async function getCheckIns() {
     if (!token || !user?.id) return null;
@@ -29,13 +33,30 @@ function PactCard({ pact }: { pact: Pact }) {
   async function handleCheckIn() {
     try {
       if (!token) return null;
+      if (!socket) return null;
       await checkIn(token, pact.id);
       setCheckedIn(true);
       getCheckIns();
+      socket.emit('pact_checkin', pact.id);
     } catch (err) {
       console.log(err);
     }
   }
+
+  useEffect(() => {
+    if (!socket) return;
+
+    function handlePactCheckin() {
+      getCheckIns();
+      // fetchPacts();
+    }
+
+    socket.on('pact_checkin', handlePactCheckin);
+
+    return () => {
+      socket.off('pact_checkin', handlePactCheckin);
+    };
+  }, [socket]);
 
   useEffect(() => {
     getCheckIns();
