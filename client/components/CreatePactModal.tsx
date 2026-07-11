@@ -31,6 +31,7 @@ function CreatePactModal({
         invite,
         endDate,
       );
+      console.log(endDate);
       addPact();
       onClose();
       onSuccess(newPact.partner_id, newPact.id);

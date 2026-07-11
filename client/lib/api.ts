@@ -145,6 +145,23 @@ async function getCheckIn(token: string, pactId: string, userId: string) {
   return response.json();
 }
 
+async function getCheckIns(token: string, pactId: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/pacts/${pactId}/checkIns`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
 export {
   register,
   login,
@@ -154,4 +171,5 @@ export {
   rejectPact,
   checkIn,
   getCheckIn,
+  getCheckIns,
 };

@@ -8,7 +8,15 @@ import { Pact } from '@/lib/types';
 import { Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-function PactCard({ pact }: { pact: Pact }) {
+function PactCard({
+  pact,
+  onClick,
+  selectedPact,
+}: {
+  pact: Pact;
+  onClick: (pactId: string) => void;
+  selectedPact: string | null;
+}) {
   const [checkedIn, setCheckedIn] = useState(false);
   const [partnerCheckedIn, setPartnerCheckedIn] = useState(false);
 
@@ -20,6 +28,7 @@ function PactCard({ pact }: { pact: Pact }) {
     if (!token || !user?.id) return null;
 
     const { result: myCheckIn } = await getCheckIn(token, pact.id, user.id);
+    // console.log(myCheckIn);
     setCheckedIn(!!myCheckIn);
 
     const { result: partnerCheckIn } = await getCheckIn(
@@ -81,7 +90,10 @@ function PactCard({ pact }: { pact: Pact }) {
   }
 
   return (
-    <div className='w-75 border border-primary-accent/20 rounded-xl bg-background-modal p-5'>
+    <div
+      className={`w-75 border ${selectedPact === pact.id ? 'border-primary-accent/80' : 'border-primary-accent/20'} rounded-xl bg-background-modal p-5`}
+      onClick={() => onClick(pact.id)}
+    >
       <div className='flex items-center gap-3'>
         <div className='bg-primary-accent w-10 h-10 rounded-full flex items-center justify-center text-text-primary font-bold'>
           {pact?.partner_username?.split(' ').map((str: string) => (

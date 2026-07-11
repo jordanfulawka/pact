@@ -70,4 +70,12 @@ async function getCheckInForDate(pactId: string, userId: string, date: string) {
   return result.rows[0];
 }
 
-export { checkIn, getCheckInForToday, getCheckInForDate };
+async function getCheckIns(pactId: string) {
+  const text = 'SELECT * FROM check_ins WHERE pact_id = $1';
+  const values = [pactId];
+
+  const result = await pool.query(text, values);
+  return result.rows;
+}
+
+export { checkIn, getCheckInForToday, getCheckInForDate, getCheckIns };

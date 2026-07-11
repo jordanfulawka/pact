@@ -8,7 +8,7 @@ import {
   rejectPact,
 } from '../db/pacts';
 import { getUserByUsername } from '../db/users';
-import { checkIn, getCheckInForToday } from '../db/checkIns';
+import { checkIn, getCheckInForToday, getCheckIns } from '../db/checkIns';
 
 const router = express.Router();
 
@@ -87,6 +87,19 @@ router.get('/:id/checkIn', httpAuth, async (req: Request, res: Response) => {
       return res.status(500).json({ error: 'server error' });
     }
     const result = await getCheckInForToday(pactId, userId);
+    res.status(200).json({ result });
+  } catch (err) {
+    res.status(500).json({ error: 'server error' });
+  }
+});
+
+router.get('/:id/checkIns', httpAuth, async (req: Request, res: Response) => {
+  try {
+    const pactId = req.params.id;
+    if (typeof pactId !== 'string') {
+      return res.status(500).json({ error: 'server error' });
+    }
+    const result = await getCheckIns(pactId);
     res.status(200).json({ result });
   } catch (err) {
     res.status(500).json({ error: 'server error' });

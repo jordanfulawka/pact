@@ -8,11 +8,14 @@ import { Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import PendingPactCard from '@/components/PendingPactCard';
 import { useSocket } from '@/contexts/SocketProvider';
+import { getCheckIns as apiGetCheckIns } from '@/lib/api';
 
 function DashboardPage() {
-  const { user } = useAuth();
+  const { token, user } = useAuth();
   const { socket } = useSocket();
   const [showCreatePactModal, setShowCreatePactModal] = useState(false);
+  const [selectedPact, setSelectedPact] = useState<string | null>(null);
+  const [checkIns, setCheckIns] = useState<any[]>([]);
 
   const { pacts, pendingPacts } = usePact();
 
@@ -20,6 +23,19 @@ function DashboardPage() {
     console.log(pacts);
     console.log(pendingPacts);
   }, [pacts, pendingPacts]);
+
+  useEffect(() => {
+    console.log(selectedPact);
+    async function getCheckIns() {
+      if (!token) return null;
+      if (!selectedPact) return null;
+      const checkIns = await apiGetCheckIns(token, selectedPact);
+      // setCheckIns(result)
+      console.log(checkIns.result);
+      setCheckIns(checkIns.result);
+    }
+    getCheckIns();
+  }, [token, selectedPact]);
 
   function emitNewPact(partnerId: string, pactId: string) {
     socket?.emit('pact_created', { partnerId, pactId });
@@ -51,29 +67,56 @@ function DashboardPage() {
           </div>
         </div>
       </div>
-      <div className='px-10 font-semibold text-text-primary'>
-        <h3 className='text-2xl pb-10'>
-          Your pacts{' '}
-          <span className='text-sm font-body text-text-secondary'>
-            • {pacts.filter((pact) => pact.status === 'active').length} active
-          </span>
-        </h3>
-        <div className='flex flex-wrap gap-10 max-w-[90%]'>
-          {pacts.map((pact) => (
-            <PactCard key={pact.id} pact={pact} />
-          ))}
-        </div>
-      </div>
-      {pendingPacts?.length > 0 && (
-        <div className='px-10 pt-20 font-semibold text-text-primary pb-5'>
-          <h3 className='text-2xl pb-10'>Pending Pacts</h3>
-          <div className='flex flex-wrap gap-10'>
-            {pendingPacts.map((pendingPact) => (
-              <PendingPactCard key={pendingPact.id} pact={pendingPact} />
+      <div className='flex'>
+        <div className='pl-10 font-semibold text-text-primary max-w-[70%]'>
+          <h3 className='text-2xl pb-10'>
+            Your pacts{' '}
+            <span className='text-sm font-body text-text-secondary'>
+              • {pacts.filter((pact) => pact.status === 'active').length} active
+            </span>
+          </h3>
+          <div className='flex flex-wrap gap-10 '>
+            {pacts.map((pact) => (
+              <PactCard
+                key={pact.id}
+                pact={pact}
+                onClick={setSelectedPact}
+                selectedPact={selectedPact}
+              />
             ))}
           </div>
+          <div className='flex flex-wrap gap-10'>
+            {' '}
+            {pendingPacts?.length > 0 && (
+              <div className='px-10 pt-20 font-semibold text-text-primary pb-5'>
+                <h3 className='text-2xl pb-10'>Pending Pacts</h3>
+                <div className='flex flex-wrap gap-10'>
+                  {pendingPacts.map((pendingPact) => (
+                    <PendingPactCard key={pendingPact.id} pact={pendingPact} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      )}
+        {checkIns && (
+          <div className='w-full'>
+            <h3 className='text-2xl pb-10 text-text-primary pl-10 font-semibold'>
+              Check-in History
+            </h3>
+            <div>
+              {checkIns.map((checkIn) => {
+                return (
+                  <div
+                    key={checkIn.id}
+                    className='text-text-primary pl-10'
+                  >{`${checkIn.user_id === user?.id ? 'You' : 'Your partner'} checked in at ${new Date(checkIn.checked_in_at).toLocaleTimeString()} UTC`}</div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
