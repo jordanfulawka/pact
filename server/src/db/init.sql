@@ -9,6 +9,7 @@ CREATE TABLE users (
 );
 
 CREATE TYPE pact_status as ENUM ('pending', 'active', 'completed', 'broken');
+CREATE TYPE pact_duration_unit AS ENUM ('days', 'weeks', 'months');
 
 CREATE TABLE pacts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -16,7 +17,9 @@ CREATE TABLE pacts (
   creator_id UUID NOT NULL CHECK (creator_id <> partner_id) REFERENCES users(id) ON DELETE CASCADE,
   partner_id UUID REFERENCES users(id),
   STATUS pact_status NOT NULL DEFAULT 'pending',
-  start_date DATE DEFAULT CURRENT_DATE,
+  duration_value INTEGER NOT NULL CHECK (duration_value > 0),
+  duration_unit pact_duration_unit NOT NULL,
+  start_date DATE,
   end_date DATE CHECK (end_date IS NULL OR end_date >= start_date),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

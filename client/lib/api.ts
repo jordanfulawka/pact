@@ -43,7 +43,8 @@ async function handleCreatePact(
   token: string,
   title: string,
   partnerUsername: string,
-  endDate: string,
+  durationValue: number,
+  durationUnit: 'days' | 'weeks' | 'months',
 ) {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pacts`, {
     method: 'POST',
@@ -51,7 +52,12 @@ async function handleCreatePact(
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ title, partnerUsername, endDate }),
+    body: JSON.stringify({
+      title,
+      partnerUsername,
+      durationValue,
+      durationUnit,
+    }),
   });
   if (!response.ok) {
     const data = await response.json();

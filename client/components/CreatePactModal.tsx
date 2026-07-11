@@ -3,7 +3,7 @@
 import { useAuth } from '@/contexts/AuthProvider';
 import { usePact } from '@/contexts/PactProvider';
 import { handleCreatePact } from '@/lib/api';
-import { Handshake, X } from 'lucide-react';
+import { Handshake, X, Minus, Plus } from 'lucide-react';
 import { useState } from 'react';
 
 function CreatePactModal({
@@ -17,6 +17,10 @@ function CreatePactModal({
   const [invite, setInvite] = useState('');
   const [endDate, setEndDate] = useState('');
   const [error, setError] = useState('');
+  const [duration, setDuration] = useState(1);
+  const [durationUnit, setDurationUnit] = useState<'days' | 'weeks' | 'months'>(
+    'weeks',
+  );
 
   const { token } = useAuth();
   const { addPact } = usePact();
@@ -29,7 +33,8 @@ function CreatePactModal({
         token,
         commitment,
         invite,
-        endDate,
+        duration,
+        durationUnit,
       );
       addPact();
       onClose();
@@ -84,7 +89,27 @@ function CreatePactModal({
               />
             </div>
             <div className='flex flex-col'>
-              <label className='font-body text-text-tertiary'>End Date</label>
+              <label className='font-body text-text-tertiary'>How long?</label>
+              <div className='flex items-center justify-between gap-8 mt-3 w-55'>
+                <button
+                  className='border border-text-secondary/70 w-fit p-3 rounded-lg'
+                  onClick={() => {
+                    if (duration === 1) return;
+                    setDuration((prev) => prev - 1);
+                  }}
+                >
+                  <Minus color='#9a918c' size={16} />
+                </button>
+                <span className='text-5xl text-text-primary font-semibold'>
+                  {duration}
+                </span>
+                <button
+                  className='border border-primary-accent w-fit p-3 rounded-lg'
+                  onClick={() => setDuration((prev) => prev + 1)}
+                >
+                  <Plus color='#ff6b47' size={16} />
+                </button>
+              </div>
               <input
                 type='date'
                 value={endDate}

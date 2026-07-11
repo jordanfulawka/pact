@@ -5,14 +5,16 @@ async function createPact(
   title: string,
   creatorId: string,
   partnerId: string,
-  endDate: string,
+  durationValue: number,
+  durationUnit: 'days' | 'weeks' | 'months',
 ) {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
+    if (durationValue <= 0) return;
     const pactResult = await client.query(
-      'INSERT INTO pacts (title, creator_id, partner_id, end_date) VALUES ($1, $2, $3, $4) RETURNING *',
-      [title, creatorId, partnerId, endDate],
+      'INSERT INTO pacts (title, creator_id, partner_id, duration_value, duration_unit) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [title, creatorId, partnerId, durationValue, durationUnit],
     );
     const pact = pactResult.rows[0];
 
@@ -88,10 +90,10 @@ async function acceptPact(pactId: string, userId: string) {
     );
     const accept = acceptResult.rows[0];
 
-    await client.query('UPDATE pacts SET status = $1 WHERE id = $2', [
-      'active',
-      pactId,
-    ]);
+    await client.query(
+      "UPDATE pacts SET status = 'active', start_date = CURRENT_DATE, end_date = CURRENT_DATE + (duration_value || ' ' || duration_unit)::interval WHERE id = $1",
+      [pactId],
+    );
 
     await createStreak(client, pactId);
 
