@@ -5,7 +5,7 @@ import { usePact } from '@/contexts/PactProvider';
 import { useSocket } from '@/contexts/SocketProvider';
 import { checkIn, getCheckIn } from '@/lib/api';
 import { Pact } from '@/lib/types';
-import { Check } from 'lucide-react';
+import { Check, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 function PactCard({
@@ -89,10 +89,15 @@ function PactCard({
     return Math.floor(daysDifference);
   }
 
+  function handleClick() {
+    if (pact.status === 'pending') return;
+    onClick(pact.id);
+  }
+
   return (
     <div
-      className={`w-75 border ${selectedPact === pact.id ? 'border-primary-accent/80' : 'border-primary-accent/20'} rounded-xl bg-background-modal p-5`}
-      onClick={() => onClick(pact.id)}
+      className={`w-75 border ${selectedPact === pact.id ? 'border-primary-accent/80' : pact.status === 'pending' ? 'border-text-secondary/30 border-dashed' : 'border-primary-accent/20'} rounded-xl bg-background-modal p-5`}
+      onClick={handleClick}
     >
       <div className='flex items-center gap-3'>
         <div
@@ -104,14 +109,28 @@ function PactCard({
         </div>
         <div className='flex flex-col'>
           <p className='text-text-tertiary text-xs tracking-widest'>
-            pact with
+            {`${pact.status === 'pending' ? 'pact sent to' : 'pact with'}`}
           </p>
           <p className='text-text-secondary'>{pact.partner_name}</p>
         </div>
       </div>
-      <div className='py-5 font-headings text-2xl'>{pact.title}</div>
+      <div
+        className={`py-5 font-headings text-2xl ${pact.status === 'pending' ? 'text-text-secondary' : ''}`}
+      >
+        {pact.title}
+      </div>
       {pact.status === 'pending' ? (
-        <div>Await confirmation from partner</div>
+        <div>
+          <div className='bg-text-secondary/8 p-3 flex items-center gap-2 rounded-md'>
+            <Clock color='#9a918c' />
+            <p className='text-sm font-light text-text-secondary'>
+              Waiting for {pact?.partner_username} to accept
+            </p>
+          </div>
+          <p className='text-sm text-text-secondary/50 underline font-light text-center pt-3'>
+            Cancel Invite
+          </p>
+        </div>
       ) : (
         <div>
           <div>
