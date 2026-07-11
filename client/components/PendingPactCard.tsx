@@ -1,15 +1,16 @@
 'use client';
 
 import { usePact } from '@/contexts/PactProvider';
-import { useSocket } from '@/contexts/SocketProvider';
 import { Pact } from '@/lib/types';
 import { Check, X } from 'lucide-react';
 
+function parseDateOnly(date: string) {
+  const [year, month, day] = date.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
 function PendingPactCard({ pact }: { pact: Pact }) {
   const { acceptPact, rejectPact } = usePact();
-  const { socket } = useSocket();
-
-  console.log(pact);
 
   return (
     <div className='w-75 border border-primary-accent/20 rounded-xl bg-background-modal p-5'>
@@ -21,25 +22,32 @@ function PendingPactCard({ pact }: { pact: Pact }) {
         </div>
         <div className='flex flex-col'>
           <p className='text-text-tertiary text-xs tracking-widest'>
-            pact with
+            pact invite from
           </p>
           <p className='text-text-secondary'>{pact.partner_name}</p>
         </div>
       </div>
-      <div className='py-5 font-headings text-2xl'>{pact.title}</div>
-      <div className='flex justify-around'>
-        <div
-          className='w-10 h-10 rounded-full bg-green-500 flex justify-center items-center'
-          onClick={() => acceptPact(pact.id)}
-        >
-          <Check />
-        </div>
-        <div
-          className='w-10 h-10 rounded-full bg-red-500 flex justify-center items-center'
+      <div className='pt-5 font-headings text-2xl'>{pact.title}</div>
+      <p className='text-text-secondary/80 tracking-wide font-light text-sm'>
+        Ends{' '}
+        {parseDateOnly(pact.end_date).toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+        })}
+      </p>
+      <div className='flex gap-3 pt-3'>
+        <button
+          className='border border-text-secondary/20 rounded-full h-12 w-12 flex justify-center items-center'
           onClick={() => rejectPact(pact.id)}
         >
           <X />
-        </div>
+        </button>
+        <button
+          className='bg-primary-accent rounded-full flex-1 flex justify-center items-center text-black font-bold'
+          onClick={() => acceptPact(pact.id)}
+        >
+          Accept <Check />
+        </button>
       </div>
     </div>
   );

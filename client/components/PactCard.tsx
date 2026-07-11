@@ -95,7 +95,9 @@ function PactCard({
       onClick={() => onClick(pact.id)}
     >
       <div className='flex items-center gap-3'>
-        <div className='bg-primary-accent w-10 h-10 rounded-full flex items-center justify-center text-text-primary font-bold'>
+        <div
+          className={`${pact.status === 'pending' ? 'bg-text-tertiary' : 'bg-primary-accent'} w-10 h-10 rounded-full flex items-center justify-center text-text-primary font-bold`}
+        >
           {pact?.partner_username?.split(' ').map((str: string) => (
             <span key={str}>{str.charAt(0)}</span>
           ))}

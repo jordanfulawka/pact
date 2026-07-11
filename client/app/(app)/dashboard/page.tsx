@@ -68,14 +68,14 @@ function DashboardPage() {
         </div>
       </div>
       <div className='flex'>
-        <div className='pl-10 font-semibold text-text-primary max-w-[70%]'>
-          <h3 className='text-2xl pb-10'>
+        <div className='pl-10 font-semibold text-text-primary'>
+          <h3 className='text-2xl pb-5'>
             Your pacts{' '}
             <span className='text-sm font-body text-text-secondary'>
               • {pacts.filter((pact) => pact.status === 'active').length} active
             </span>
           </h3>
-          <div className='flex flex-wrap gap-10 '>
+          <div className='flex flex-wrap gap-10 pb-10'>
             {pacts.map((pact) => (
               <PactCard
                 key={pact.id}
@@ -85,37 +85,32 @@ function DashboardPage() {
               />
             ))}
           </div>
-          <div className='flex flex-wrap gap-10'>
-            {' '}
-            {pendingPacts?.length > 0 && (
-              <div className='px-10 pt-20 font-semibold text-text-primary pb-5'>
-                <h3 className='text-2xl pb-10'>Pending Pacts</h3>
-                <div className='flex flex-wrap gap-10'>
-                  {pendingPacts.map((pendingPact) => (
-                    <PendingPactCard key={pendingPact.id} pact={pendingPact} />
-                  ))}
-                </div>
-              </div>
-            )}
+          <h3 className='text-2xl pb-5'>Pending Pacts</h3>
+          <div className='flex flex-wrap gap-10 '>
+            {pendingPacts.map((pendingPact) => (
+              <PendingPactCard key={pendingPact.id} pact={pendingPact} />
+            ))}
           </div>
         </div>
-        {checkIns && (
-          <div className='w-full'>
-            <h3 className='text-2xl pb-10 text-text-primary pl-10 font-semibold'>
-              Check-in History
-            </h3>
-            <div>
-              {checkIns.map((checkIn) => {
-                return (
-                  <div
-                    key={checkIn.id}
-                    className='text-text-primary pl-10'
-                  >{`${checkIn.user_id === user?.id ? 'You' : 'Your partner'} checked in at ${new Date(checkIn.checked_in_at).toLocaleTimeString()} UTC`}</div>
-                );
-              })}
+        {/* <div>
+          {checkIns && (
+            <div className='w-full'>
+              <h3 className='text-2xl pb-10 text-text-primary pl-10 font-semibold'>
+                Check-in History
+              </h3>
+              <div>
+                {checkIns.map((checkIn) => {
+                  return (
+                    <div
+                      key={checkIn.id}
+                      className='text-text-primary pl-10'
+                    >{`${checkIn.user_id === user?.id ? 'You' : 'Your partner'} checked in at ${new Date(checkIn.checked_in_at).toLocaleTimeString()} EST`}</div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div> */}
       </div>
     </div>
   );
