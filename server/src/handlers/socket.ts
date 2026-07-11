@@ -30,6 +30,9 @@ function registerHandlers(io: Server) {
     socket.on('pact_checkin', (pactId) => {
       io.to(`pact:${pactId}`).emit('pact_checkin');
     });
+    socket.on('pact_delete', (pactId) => {
+      io.to(`pact:${pactId}`).emit('pact_delete');
+    });
   });
 }
 

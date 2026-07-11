@@ -3,6 +3,7 @@ import { httpAuth } from '../middlewares/httpAuth';
 import {
   acceptPact,
   createPact,
+  deletePact,
   getPacts,
   getPendingPacts,
   rejectPact,
@@ -37,6 +38,19 @@ router.post('/', httpAuth, async (req: Request, res: Response) => {
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
+  }
+});
+
+router.delete('/:id', httpAuth, async (req: Request, res: Response) => {
+  try {
+    const pactId = req.params.id;
+    if (typeof pactId !== 'string') {
+      return res.status(500).json({ error: 'server error' });
+    }
+    const result = await deletePact(pactId);
+    res.status(204).json();
+  } catch (err) {
+    res.status(500).json({ error: 'server error' });
   }
 });
 

@@ -121,6 +121,14 @@ async function updatePactStatus(pactId: string) {
   return result.rows[0];
 }
 
+async function deletePact(pactId: string) {
+  const text = 'DELETE FROM pacts WHERE id = $1';
+  const values = [pactId];
+
+  const result = await pool.query(text, values);
+  return result.rows[0];
+}
+
 export {
   createPact,
   getPacts,
@@ -129,4 +137,5 @@ export {
   getPendingPacts,
   getPactById,
   updatePactStatus,
+  deletePact,
 };

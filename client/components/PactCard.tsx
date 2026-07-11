@@ -3,7 +3,7 @@
 import { useAuth } from '@/contexts/AuthProvider';
 import { usePact } from '@/contexts/PactProvider';
 import { useSocket } from '@/contexts/SocketProvider';
-import { checkIn, getCheckIn } from '@/lib/api';
+import { checkIn, getCheckIn, cancelPact } from '@/lib/api';
 import { Pact } from '@/lib/types';
 import { Check, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -61,9 +61,11 @@ function PactCard({
     }
 
     socket.on('pact_checkin', handlePactCheckin);
+    socket.on('pact_delete', fetchPacts);
 
     return () => {
       socket.off('pact_checkin', handlePactCheckin);
+      socket.off('pact_delete', fetchPacts);
     };
   }, [socket]);
 
@@ -127,9 +129,17 @@ function PactCard({
               Waiting for {pact?.partner_username} to accept
             </p>
           </div>
-          <p className='text-sm text-text-secondary/50 underline font-light text-center pt-3'>
+          <button
+            className='text-sm text-text-secondary/50 underline font-light text-center pt-3 w-full'
+            onClick={() => {
+              if (!token) return;
+              if (!socket) return;
+              cancelPact(token, pact.id);
+              socket.emit('pact_delete', pact.id);
+            }}
+          >
             Cancel Invite
-          </p>
+          </button>
         </div>
       ) : (
         <div>

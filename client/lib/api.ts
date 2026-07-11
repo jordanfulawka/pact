@@ -162,6 +162,24 @@ async function getCheckIns(token: string, pactId: string) {
   return response.json();
 }
 
+async function cancelPact(token: string, pactId: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/pacts/${pactId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return true;
+}
+
 export {
   register,
   login,
@@ -172,4 +190,5 @@ export {
   checkIn,
   getCheckIn,
   getCheckIns,
+  cancelPact,
 };
