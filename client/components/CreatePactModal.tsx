@@ -88,34 +88,67 @@ function CreatePactModal({
                 className='p-4 bg-text-tertiary/40 w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
               />
             </div>
-            <div className='flex flex-col'>
+            <div className='flex flex-col w-100 '>
               <label className='font-body text-text-tertiary'>How long?</label>
-              <div className='flex items-center justify-between gap-8 mt-3 w-55'>
-                <button
-                  className='border border-text-secondary/70 w-fit p-3 rounded-lg'
-                  onClick={() => {
-                    if (duration === 1) return;
-                    setDuration((prev) => prev - 1);
-                  }}
-                >
-                  <Minus color='#9a918c' size={16} />
-                </button>
-                <span className='text-5xl text-text-primary font-semibold'>
-                  {duration}
-                </span>
-                <button
-                  className='border border-primary-accent w-fit p-3 rounded-lg'
-                  onClick={() => setDuration((prev) => prev + 1)}
-                >
-                  <Plus color='#ff6b47' size={16} />
-                </button>
+              <div className=' flex flex-col items-center gap-3'>
+                <div className='flex items-center justify-between gap-8 mt-3 w-55 '>
+                  <button
+                    type='button'
+                    className='border border-text-secondary/70 w-fit p-3 rounded-lg'
+                    onClick={() => {
+                      if (duration === 1) return;
+                      setDuration((prev) => prev - 1);
+                    }}
+                  >
+                    <Minus color='#9a918c' size={16} />
+                  </button>
+                  <span className='text-5xl text-text-primary font-semibold'>
+                    {duration}
+                  </span>
+                  <button
+                    type='button'
+                    className='border border-primary-accent w-fit p-3 rounded-lg'
+                    onClick={() => setDuration((prev) => prev + 1)}
+                  >
+                    <Plus color='#ff6b47' size={16} />
+                  </button>
+                </div>
+                <div className='flex justify-around bg-text-tertiary/50 w-fit rounded-lg px-1.5 py-1'>
+                  <button
+                    type='button'
+                    className={`py-2 px-5 rounded-md ${durationUnit === 'days' ? 'bg-primary-accent ' : ''}`}
+                    onClick={() => setDurationUnit('days')}
+                  >
+                    <span
+                      className={` ${durationUnit === 'days' ? 'text-black' : 'text-text-secondary'}`}
+                    >
+                      Days
+                    </span>
+                  </button>
+                  <button
+                    type='button'
+                    className={`py-2 px-5 rounded-md ${durationUnit === 'weeks' ? 'bg-primary-accent' : ''}`}
+                    onClick={() => setDurationUnit('weeks')}
+                  >
+                    <span
+                      className={` ${durationUnit === 'weeks' ? 'text-black' : 'text-text-secondary'}`}
+                    >
+                      Weeks
+                    </span>
+                  </button>
+                  <button
+                    type='button'
+                    className={`py-2 px-5 rounded-md ${durationUnit === 'months' ? 'bg-primary-accent' : ''}`}
+                    onClick={() => setDurationUnit('months')}
+                  >
+                    <span
+                      className={` ${durationUnit === 'months' ? 'text-black' : 'text-text-secondary'}`}
+                    >
+                      Months
+                    </span>
+                  </button>
+                </div>
               </div>
-              <input
-                type='date'
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className='p-4 bg-text-tertiary/40 w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
-              />
             </div>
             <div className='flex flex-col'>
               <label className='font-body text-text-tertiary'>

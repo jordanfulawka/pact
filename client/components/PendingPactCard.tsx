@@ -1,8 +1,10 @@
 'use client';
 
 import { usePact } from '@/contexts/PactProvider';
+import { useSocket } from '@/contexts/SocketProvider';
 import { Pact } from '@/lib/types';
-import { Check, X } from 'lucide-react';
+import { Check, X, Clock } from 'lucide-react';
+import { useEffect } from 'react';
 
 function parseDateOnly(date: string) {
   const [year, month, day] = date.split('-').map(Number);
@@ -11,6 +13,18 @@ function parseDateOnly(date: string) {
 
 function PendingPactCard({ pact }: { pact: Pact }) {
   const { acceptPact, rejectPact } = usePact();
+  const { fetchPacts } = usePact();
+  const { socket } = useSocket();
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on('pact_delete', fetchPacts);
+
+    return () => {
+      socket.off('pact_delete', fetchPacts);
+    };
+  });
 
   return (
     <div className='w-75 border border-primary-accent/20 rounded-xl bg-background-modal p-5'>
@@ -28,13 +42,20 @@ function PendingPactCard({ pact }: { pact: Pact }) {
         </div>
       </div>
       <div className='pt-5 font-headings text-2xl'>{pact.title}</div>
-      <p className='text-text-secondary/80 tracking-wide font-light text-sm'>
-        Ends{' '}
+      <div className='flex items-center gap-1'>
+        <Clock size={16} color='#9a918c' />
+        <p className='text-text-secondary/80 tracking-wide font-light text-sm'>
+          {/* Ends{' '}
         {parseDateOnly(pact.end_date).toLocaleDateString('en-US', {
           month: 'long',
           day: 'numeric',
-        })}
-      </p>
+          })} */}
+          {pact.duration_value}{' '}
+          {pact.duration_value > 1
+            ? pact.duration_unit
+            : pact.duration_unit.slice(0, -1)}
+        </p>
+      </div>
       <div className='flex gap-3 pt-3'>
         <button
           className='border border-text-secondary/20 rounded-full h-12 w-12 flex justify-center items-center'
