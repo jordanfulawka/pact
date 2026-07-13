@@ -40,15 +40,10 @@ function PactProvider({ children }: { children: React.ReactNode }) {
       console.log('pact_rejected');
       fetchPacts();
     });
-    // socket.on('pact_checkin', () => {
-    //   console.log('pact_checkin');
-    //   fetchPacts();
-    // });
     return () => {
       socket.off('pact_created');
       socket.off('pact_accepted');
       socket.off('pact_rejected');
-      // socket.off('pact_checkin');
     };
   }, [socket]);
 

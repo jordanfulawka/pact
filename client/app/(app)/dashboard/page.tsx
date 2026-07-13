@@ -20,7 +20,6 @@ function DashboardPage() {
   const { pacts, pendingPacts } = usePact();
 
   useEffect(() => {
-    console.log(selectedPact);
     async function getCheckIns() {
       if (!token) return null;
       if (!selectedPact) return null;

@@ -3,7 +3,6 @@ import { resetBrokenStreaks } from '../db/streaks';
 
 export async function checkStreaks(io: Server) {
   const resetPactIds = await resetBrokenStreaks();
-  console.log(resetPactIds);
   resetPactIds.forEach((pactId) =>
     io.to(`pact:${pactId}`).emit('streak_reset'),
   );
