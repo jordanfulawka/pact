@@ -60,12 +60,19 @@ function PactCard({
       fetchPacts();
     }
 
+    function handleStreakReset() {
+      console.log('streak reset!');
+      fetchPacts();
+    }
+
     socket.on('pact_checkin', handlePactCheckin);
     socket.on('pact_delete', fetchPacts);
+    socket.on('streak_reset', handleStreakReset);
 
     return () => {
       socket.off('pact_checkin', handlePactCheckin);
       socket.off('pact_delete', fetchPacts);
+      socket.off('streak_reset', handleStreakReset);
     };
   }, [socket]);
 

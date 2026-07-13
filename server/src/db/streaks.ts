@@ -41,4 +41,19 @@ async function incrementStreak(client: PoolClient, pactId: string) {
   return result.rows[0];
 }
 
-export { createStreak, incrementStreak, getStreakByPactId };
+async function resetBrokenStreaks() {
+  const text = `
+  UPDATE streaks s
+  SET current_streak = 0
+  FROM pacts p
+  WHERE p.id = s.pact_id
+    AND p.status = 'active'
+    AND (s.last_completed_date IS NULL OR s.last_completed_date < CURRENT_DATE - 1)
+    AND s.current_streak > 0
+  RETURNING s.pact_id`;
+
+  const result = await pool.query(text);
+  return result.rows.map((r) => r.pact_id);
+}
+
+export { createStreak, incrementStreak, getStreakByPactId, resetBrokenStreaks };

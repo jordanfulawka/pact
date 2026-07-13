@@ -20,18 +20,11 @@ function DashboardPage() {
   const { pacts, pendingPacts } = usePact();
 
   useEffect(() => {
-    console.log(pacts);
-    console.log(pendingPacts);
-  }, [pacts, pendingPacts]);
-
-  useEffect(() => {
     console.log(selectedPact);
     async function getCheckIns() {
       if (!token) return null;
       if (!selectedPact) return null;
       const checkIns = await apiGetCheckIns(token, selectedPact);
-      // setCheckIns(result)
-      console.log(checkIns.result);
       setCheckIns(checkIns.result);
     }
     getCheckIns();

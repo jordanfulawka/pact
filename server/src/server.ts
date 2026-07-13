@@ -6,6 +6,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { socketAuth } from './middlewares/socketAuth';
 import { registerHandlers } from './handlers/socket';
+import { startScheduler } from './jobs/scheduler';
 
 const app = express();
 
@@ -25,5 +26,6 @@ const io = new Server(httpServer, {
 
 io.use(socketAuth);
 registerHandlers(io);
+startScheduler(io);
 
 export default httpServer;
