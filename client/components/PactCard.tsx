@@ -28,7 +28,6 @@ function PactCard({
     if (!token || !user?.id) return null;
 
     const { result: myCheckIn } = await getCheckIn(token, pact.id, user.id);
-    // console.log(myCheckIn);
     setCheckedIn(!!myCheckIn);
 
     const { result: partnerCheckIn } = await getCheckIn(

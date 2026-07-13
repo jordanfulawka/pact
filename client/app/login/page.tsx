@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Handshake } from 'lucide-react';
 import { login as apiLogin, register as apiRegister } from '@/lib/api';
 import { useRouter } from 'next/navigation';
@@ -36,6 +36,10 @@ function LoginPage() {
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
     try {
+      if (password !== confirmPassword) {
+        setError("Your passwords don't match!");
+        return;
+      }
       setLoading(true);
       const { token } = await apiRegister(name, username, email, password);
       login(token);
@@ -171,6 +175,7 @@ function LoginPage() {
                 </button>
               </form>
             )}
+            {error && <p className='text-red-500'>{error}</p>}
           </div>
         </div>
       </div>
