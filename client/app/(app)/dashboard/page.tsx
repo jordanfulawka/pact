@@ -18,24 +18,35 @@ function DashboardPage() {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
+  const [canPendingScrollLeft, setCanPendingScrollLeft] = useState(false);
+  const [canPendingScrollRight, setCanPendingScrollRight] = useState(false);
+
+  const pendingPactsRowRef = useRef<HTMLDivElement>(null);
+
   const { pacts, pendingPacts } = usePact();
 
   function updateScrollButtons() {
-    const el = pactsRowRef.current;
+    let el = pactsRowRef.current;
     if (!el) return;
     setCanScrollLeft(el.scrollLeft > 0);
     setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+    el = pendingPactsRowRef.current;
+    if (!el) return;
+    setCanPendingScrollLeft(el.scrollLeft > 0);
+    setCanPendingScrollRight(
+      el.scrollLeft + el.clientWidth < el.scrollWidth - 1,
+    );
   }
 
-  function scrollByAmount(direction: 1 | -1) {
-    const el = pactsRowRef.current;
+  function scrollByAmount(direction: 1 | -1, el: HTMLDivElement | null) {
+    // const el = pactsRowRef.current;
     if (!el) return;
     el.scrollBy({ left: direction * el.clientWidth * 0.8, behavior: 'smooth' });
   }
 
   useEffect(() => {
     updateScrollButtons();
-  }, [pacts]);
+  }, [pacts, pendingPacts]);
 
   function emitNewPact(partnerId: string, pactId: string) {
     socket?.emit('pact_created', { partnerId, pactId });
@@ -80,14 +91,14 @@ function DashboardPage() {
             <div className='flex gap-2'>
               <button
                 className='bg-background-modal border border-primary-accent/80 rounded-full w-10 h-10 flex justify-center items-center disabled:opacity-30'
-                onClick={() => scrollByAmount(-1)}
+                onClick={() => scrollByAmount(-1, pactsRowRef.current)}
                 disabled={!canScrollLeft}
               >
                 <ArrowLeft />
               </button>
               <button
                 className='bg-background-modal border border-primary-accent/80 rounded-full w-10 h-10 flex justify-center items-center disabled:opacity-30'
-                onClick={() => scrollByAmount(1)}
+                onClick={() => scrollByAmount(1, pactsRowRef.current)}
                 disabled={!canScrollRight}
               >
                 <ArrowRight />
@@ -108,8 +119,30 @@ function DashboardPage() {
               />
             ))}
           </div>
-          <h3 className='text-2xl pb-5'>Pending Pacts</h3>
-          <div className='flex flex-wrap gap-10 '>
+          <div className='flex justify-between items-center pr-10 mb-5'>
+            <h3 className='text-2xl'>Pending Pacts</h3>
+            <div className='flex gap-2'>
+              <button
+                className='bg-background-modal border border-primary-accent/80 rounded-full w-10 h-10 flex justify-center items-center disabled:opacity-30'
+                onClick={() => scrollByAmount(-1, pendingPactsRowRef.current)}
+                disabled={!canPendingScrollLeft}
+              >
+                <ArrowLeft />
+              </button>
+              <button
+                className='bg-background-modal border border-primary-accent/80 rounded-full w-10 h-10 flex justify-center items-center disabled:opacity-30'
+                onClick={() => scrollByAmount(1, pendingPactsRowRef.current)}
+                disabled={!canPendingScrollRight}
+              >
+                <ArrowRight />
+              </button>
+            </div>
+          </div>
+          <div
+            className='flex gap-10 overflow-x-auto scrollbar-hide pr-10'
+            ref={pendingPactsRowRef}
+            onScroll={updateScrollButtons}
+          >
             {pendingPacts.map((pendingPact) => (
               <PendingPactCard key={pendingPact.id} pact={pendingPact} />
             ))}

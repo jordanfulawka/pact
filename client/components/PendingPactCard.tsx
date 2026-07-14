@@ -27,7 +27,7 @@ function PendingPactCard({ pact }: { pact: Pact }) {
   });
 
   return (
-    <div className='w-75 border border-primary-accent/20 rounded-xl bg-background-modal p-5'>
+    <div className='w-75 border border-primary-accent/20 rounded-xl bg-background-modal p-5 shrink-0'>
       <div className='flex items-center gap-3'>
         <div className='bg-primary-accent w-10 h-10 rounded-full flex items-center justify-center text-text-primary font-bold'>
           {pact?.partner_username?.split(' ').map((str: string) => (
