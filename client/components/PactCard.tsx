@@ -104,7 +104,7 @@ function PactCard({
 
   return (
     <div
-      className={`w-75 border ${selectedPact === pact.id ? 'border-primary-accent/80' : pact.status === 'pending' ? 'border-text-secondary/30 border-dashed' : 'border-primary-accent/20'} rounded-xl bg-background-modal p-5`}
+      className={`w-75 border ${selectedPact === pact.id ? 'border-primary-accent/80' : pact.status === 'pending' ? 'border-text-secondary/30 border-dashed' : 'border-primary-accent/20'} rounded-xl bg-background-modal p-5 shrink-0`}
       onClick={handleClick}
     >
       <div className='flex items-center gap-3'>

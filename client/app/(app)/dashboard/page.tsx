@@ -4,30 +4,38 @@ import CreatePactModal from '@/components/CreatePactModal';
 import { useAuth } from '@/contexts/AuthProvider';
 import PactCard from '@/components/PactCard';
 import { usePact } from '@/contexts/PactProvider';
-import { Plus } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Plus, ArrowRight, ArrowLeft } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import PendingPactCard from '@/components/PendingPactCard';
 import { useSocket } from '@/contexts/SocketProvider';
-import { getCheckIns as apiGetCheckIns } from '@/lib/api';
 
 function DashboardPage() {
-  const { token, user } = useAuth();
+  const { user } = useAuth();
   const { socket } = useSocket();
   const [showCreatePactModal, setShowCreatePactModal] = useState(false);
   const [selectedPact, setSelectedPact] = useState<string | null>(null);
-  const [checkIns, setCheckIns] = useState<any[]>([]);
+  const pactsRowRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   const { pacts, pendingPacts } = usePact();
 
+  function updateScrollButtons() {
+    const el = pactsRowRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  }
+
+  function scrollByAmount(direction: 1 | -1) {
+    const el = pactsRowRef.current;
+    if (!el) return;
+    el.scrollBy({ left: direction * el.clientWidth * 0.8, behavior: 'smooth' });
+  }
+
   useEffect(() => {
-    async function getCheckIns() {
-      if (!token) return null;
-      if (!selectedPact) return null;
-      const checkIns = await apiGetCheckIns(token, selectedPact);
-      setCheckIns(checkIns.result);
-    }
-    getCheckIns();
-  }, [token, selectedPact]);
+    updateScrollButtons();
+  }, [pacts]);
 
   function emitNewPact(partnerId: string, pactId: string) {
     socket?.emit('pact_created', { partnerId, pactId });
@@ -59,15 +67,38 @@ function DashboardPage() {
           </div>
         </div>
       </div>
-      <div className='flex'>
-        <div className='pl-10 font-semibold text-text-primary'>
-          <h3 className='text-2xl pb-5'>
-            Your pacts{' '}
-            <span className='text-sm font-body text-text-secondary'>
-              • {pacts.filter((pact) => pact.status === 'active').length} active
-            </span>
-          </h3>
-          <div className='flex flex-wrap gap-10 pb-10'>
+      <div className='flex min-w-0'>
+        <div className='pl-10 font-semibold text-text-primary min-w-0 w-full'>
+          <div className='flex justify-between items-center pr-10 mb-5'>
+            <h3 className='text-2xl '>
+              Your pacts{' '}
+              <span className='text-sm font-body text-text-secondary'>
+                • {pacts.filter((pact) => pact.status === 'active').length}{' '}
+                active
+              </span>
+            </h3>
+            <div className='flex gap-2'>
+              <button
+                className='bg-background-modal border border-primary-accent/80 rounded-full w-10 h-10 flex justify-center items-center disabled:opacity-30'
+                onClick={() => scrollByAmount(-1)}
+                disabled={!canScrollLeft}
+              >
+                <ArrowLeft />
+              </button>
+              <button
+                className='bg-background-modal border border-primary-accent/80 rounded-full w-10 h-10 flex justify-center items-center disabled:opacity-30'
+                onClick={() => scrollByAmount(1)}
+                disabled={!canScrollRight}
+              >
+                <ArrowRight />
+              </button>
+            </div>
+          </div>
+          <div
+            ref={pactsRowRef}
+            onScroll={updateScrollButtons}
+            className='flex gap-10 pb-10 overflow-x-auto w-full min-w-0 pr-10 scrollbar-hide'
+          >
             {pacts.map((pact) => (
               <PactCard
                 key={pact.id}
@@ -84,25 +115,6 @@ function DashboardPage() {
             ))}
           </div>
         </div>
-        {/* <div>
-          {checkIns && (
-            <div className='w-full'>
-              <h3 className='text-2xl pb-10 text-text-primary pl-10 font-semibold'>
-                Check-in History
-              </h3>
-              <div>
-                {checkIns.map((checkIn) => {
-                  return (
-                    <div
-                      key={checkIn.id}
-                      className='text-text-primary pl-10'
-                    >{`${checkIn.user_id === user?.id ? 'You' : 'Your partner'} checked in at ${new Date(checkIn.checked_in_at).toLocaleTimeString()} EST`}</div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div> */}
       </div>
     </div>
   );
