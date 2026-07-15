@@ -33,11 +33,9 @@ function PactProvider({ children }: { children: React.ReactNode }) {
       fetchPacts();
     });
     socket.on('pact_accepted', () => {
-      console.log('pact_accepted');
       fetchPacts();
     });
     socket.on('pact_rejected', () => {
-      console.log('pact_rejected');
       fetchPacts();
     });
     return () => {

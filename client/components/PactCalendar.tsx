@@ -13,7 +13,6 @@ function parseDate(date: string) {
 }
 
 function PactCalendar({ pact }: { pact: Pact }) {
-  const [days, setDays] = useState<number | null>(null);
   const [checkIns, setCheckIns] = useState<any[]>([]);
   const { token, user } = useAuth();
 
@@ -28,13 +27,6 @@ function PactCalendar({ pact }: { pact: Pact }) {
     const dateArray: { dateStr: string; dateObj: Date }[] = [];
 
     while (currentDate <= endDate) {
-      // dateArray.push(
-      //   currentDate.getFullYear() +
-      //     '-' +
-      //     (currentDate.getMonth() + 1) +
-      //     '-' +
-      //     currentDate.getDate(),
-      // );
       dateArray.push({
         dateStr:
           currentDate.getFullYear() +
@@ -47,8 +39,6 @@ function PactCalendar({ pact }: { pact: Pact }) {
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
-    setDays(dateArray);
-
     async function getCheckIns() {
       if (!token) return;
       const result = await apiGetCheckIns(token, pact.id);
@@ -56,7 +46,7 @@ function PactCalendar({ pact }: { pact: Pact }) {
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       dateArray.forEach((day, index) => {
-        const currentDateCheckIns = result.result.filter((checkIn) => {
+        const currentDateCheckIns = result.result.filter((checkIn: any) => {
           const parsedDate = parseDate(checkIn.date);
           const checkInDate =
             parsedDate.getFullYear() +
@@ -86,12 +76,6 @@ function PactCalendar({ pact }: { pact: Pact }) {
     }
     getCheckIns();
   }, [pact]);
-
-  useEffect(() => {
-    console.log(days);
-    console.log(checkIns);
-    console.log(pact);
-  }, [days, checkIns, pact]);
 
   // ${checkIn.status === 'today' ? 'bg-primary-accent/15 border border-primary-accent' : checkIn.status === 'future' ? 'bg-background-modal border border-text-secondary border-dashed' : }
   return (

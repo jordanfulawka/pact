@@ -60,7 +60,6 @@ function PactCard({
     }
 
     function handleStreakReset() {
-      console.log('streak reset!');
       fetchPacts();
     }
 

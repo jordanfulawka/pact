@@ -127,25 +127,27 @@ function DashboardPage() {
             ))}
           </div>
           {selectedPact && <PactCalendar pact={selectedPact} />}
-          <div className='flex justify-between items-center pr-10 mb-5'>
-            <h3 className='text-2xl'>Pending Pacts</h3>
-            <div className='flex gap-2'>
-              <button
-                className='bg-background-modal border border-primary-accent/80 rounded-full w-10 h-10 flex justify-center items-center disabled:opacity-30'
-                onClick={() => scrollByAmount(-1, pendingPactsRowRef.current)}
-                disabled={!canPendingScrollLeft}
-              >
-                <ArrowLeft />
-              </button>
-              <button
-                className='bg-background-modal border border-primary-accent/80 rounded-full w-10 h-10 flex justify-center items-center disabled:opacity-30'
-                onClick={() => scrollByAmount(1, pendingPactsRowRef.current)}
-                disabled={!canPendingScrollRight}
-              >
-                <ArrowRight />
-              </button>
+          {pendingPacts.length > 0 && (
+            <div className='flex justify-between items-center pr-10 mb-5'>
+              <h3 className='text-2xl'>Pending Pacts</h3>
+              <div className='flex gap-2'>
+                <button
+                  className='bg-background-modal border border-primary-accent/80 rounded-full w-10 h-10 flex justify-center items-center disabled:opacity-30'
+                  onClick={() => scrollByAmount(-1, pendingPactsRowRef.current)}
+                  disabled={!canPendingScrollLeft}
+                >
+                  <ArrowLeft />
+                </button>
+                <button
+                  className='bg-background-modal border border-primary-accent/80 rounded-full w-10 h-10 flex justify-center items-center disabled:opacity-30'
+                  onClick={() => scrollByAmount(1, pendingPactsRowRef.current)}
+                  disabled={!canPendingScrollRight}
+                >
+                  <ArrowRight />
+                </button>
+              </div>
             </div>
-          </div>
+          )}
           <div
             className='flex gap-10 overflow-x-auto scrollbar-hide pr-10'
             ref={pendingPactsRowRef}

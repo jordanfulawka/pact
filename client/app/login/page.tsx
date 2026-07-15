@@ -24,7 +24,6 @@ function LoginPage() {
     try {
       setLoading(true);
       const { token } = await apiLogin(email, password);
-      console.log(token);
       login(token);
       setLoading(false);
       router.push('/dashboard');
@@ -43,7 +42,6 @@ function LoginPage() {
       setLoading(true);
       const { token } = await apiRegister(name, username, email, password);
       login(token);
-      console.log(token);
       setLoading(false);
       router.push('/dashboard');
     } catch (err) {
