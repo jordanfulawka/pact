@@ -5,7 +5,7 @@ function httpAuth(req: Request, res: Response, next: NextFunction) {
   const token = req.headers.authorization?.split(' ')[1];
 
   if (!token) {
-    return res.status(500).json({ error: 'Invalid token' });
+    return res.status(401).json({ error: 'Invalid token' });
   }
 
   const secret = process.env.JWT_SECRET;
@@ -17,7 +17,7 @@ function httpAuth(req: Request, res: Response, next: NextFunction) {
     const decoded = jwt.verify(token, secret);
     (req as any).user = decoded;
   } catch (err) {
-    res.status(401).json({ error: 'Unauthroized' });
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
   next();

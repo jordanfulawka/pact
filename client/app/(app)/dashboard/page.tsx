@@ -58,8 +58,6 @@ function DashboardPage() {
 
   useEffect(() => {
     updateScrollButtons();
-    console.log(pacts);
-    console.log('pacts updated');
   }, [pacts, pendingPacts]);
 
   useEffect(() => {
