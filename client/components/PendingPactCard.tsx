@@ -6,11 +6,6 @@ import { Pact } from '@/lib/types';
 import { Check, X, Clock } from 'lucide-react';
 import { useEffect } from 'react';
 
-function parseDateOnly(date: string) {
-  const [year, month, day] = date.split('-').map(Number);
-  return new Date(year, month - 1, day);
-}
-
 function PendingPactCard({ pact }: { pact: Pact }) {
   const { acceptPact, rejectPact } = usePact();
   const { fetchPacts } = usePact();
@@ -45,11 +40,6 @@ function PendingPactCard({ pact }: { pact: Pact }) {
       <div className='flex items-center gap-1'>
         <Clock size={16} color='#9a918c' />
         <p className='text-text-secondary/80 tracking-wide font-light text-sm'>
-          {/* Ends{' '}
-        {parseDateOnly(pact.end_date).toLocaleDateString('en-US', {
-          month: 'long',
-          day: 'numeric',
-          })} */}
           {pact.duration_value}{' '}
           {pact.duration_value > 1
             ? pact.duration_unit

@@ -11,11 +11,11 @@ import { useEffect, useState } from 'react';
 function PactCard({
   pact,
   onClick,
-  selectedPact,
+  selectedPactID,
 }: {
   pact: Pact;
-  onClick: (pactId: string) => void;
-  selectedPact: string | null;
+  onClick: (pact: Pact) => void;
+  selectedPactID: string | null;
 }) {
   const [checkedIn, setCheckedIn] = useState(false);
   const [partnerCheckedIn, setPartnerCheckedIn] = useState(false);
@@ -99,12 +99,12 @@ function PactCard({
 
   function handleClick() {
     if (pact.status === 'pending') return;
-    onClick(pact.id);
+    onClick(pact);
   }
 
   return (
     <div
-      className={`w-75 border ${selectedPact === pact.id ? 'border-primary-accent/80' : pact.status === 'pending' ? 'border-text-secondary/30 border-dashed' : 'border-primary-accent/20'} rounded-xl bg-background-modal p-5 shrink-0`}
+      className={`w-75 border ${selectedPactID === pact.id ? 'border-primary-accent/80' : pact.status === 'pending' ? 'border-text-secondary/30 border-dashed' : 'border-primary-accent/20'} rounded-xl bg-background-modal p-5 shrink-0`}
       onClick={handleClick}
     >
       <div className='flex items-center gap-3'>

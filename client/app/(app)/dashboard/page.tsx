@@ -8,12 +8,15 @@ import { Plus, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import PendingPactCard from '@/components/PendingPactCard';
 import { useSocket } from '@/contexts/SocketProvider';
+import PactCalendar from '@/components/PactCalendar';
+import { Pact } from '@/lib/types';
 
 function DashboardPage() {
   const { user } = useAuth();
   const { socket } = useSocket();
   const [showCreatePactModal, setShowCreatePactModal] = useState(false);
-  const [selectedPact, setSelectedPact] = useState<string | null>(null);
+  const [selectedPact, setSelectedPact] = useState<Pact | null>(null);
+  const [selectedPactID, setSelectedPactID] = useState<string | null>(null);
   const pactsRowRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -39,7 +42,6 @@ function DashboardPage() {
   }
 
   function scrollByAmount(direction: 1 | -1, el: HTMLDivElement | null) {
-    // const el = pactsRowRef.current;
     if (!el) return;
     el.scrollBy({ left: direction * el.clientWidth * 0.8, behavior: 'smooth' });
   }
@@ -50,6 +52,11 @@ function DashboardPage() {
 
   function emitNewPact(partnerId: string, pactId: string) {
     socket?.emit('pact_created', { partnerId, pactId });
+  }
+
+  function handleSelectPact(pact: Pact) {
+    setSelectedPactID(pact.id);
+    setSelectedPact(pact);
   }
 
   return (
@@ -114,11 +121,12 @@ function DashboardPage() {
               <PactCard
                 key={pact.id}
                 pact={pact}
-                onClick={setSelectedPact}
-                selectedPact={selectedPact}
+                onClick={handleSelectPact}
+                selectedPactID={selectedPactID}
               />
             ))}
           </div>
+          {selectedPact && <PactCalendar pact={selectedPact} />}
           <div className='flex justify-between items-center pr-10 mb-5'>
             <h3 className='text-2xl'>Pending Pacts</h3>
             <div className='flex gap-2'>
