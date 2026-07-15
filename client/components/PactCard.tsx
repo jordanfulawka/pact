@@ -154,22 +154,24 @@ function PactCard({
             </span>
             <span className='text-text-tertiary'>day streak</span>
           </div>
-          <div className='flex gap-5 my-2 text-sm text-text-secondary bg-text-tertiary/40 p-1 rounded-md w-fit font-light'>
-            <div>
-              <p>
-                Ends{' '}
-                {parseDateOnly(pact.end_date).toLocaleDateString('en-US', {
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </p>
+          {pact.end_date && (
+            <div className='flex gap-5 my-2 text-sm text-text-secondary bg-text-tertiary/40 p-1 rounded-md w-fit font-light'>
+              <div>
+                <p>
+                  Ends{' '}
+                  {parseDateOnly(pact.end_date).toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </p>
+              </div>
+              <div>
+                <p>
+                  <span>{daysUntilDate(pact.end_date)}</span> days left
+                </p>
+              </div>
             </div>
-            <div>
-              <p>
-                <span>{daysUntilDate(pact.end_date)}</span> days left
-              </p>
-            </div>
-          </div>
+          )}
           <div className='bg-text-tertiary/40 rounded-md p-3'>
             <p className='text-text-secondary/50 text-sm tracking-widest uppercase font-light mb-3'>
               Today&apos;s check ins
