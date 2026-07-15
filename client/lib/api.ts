@@ -168,6 +168,23 @@ async function getCheckIns(token: string, pactId: string) {
   return response.json();
 }
 
+async function getUserCheckIns(token: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/pacts/checkIns/today`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
 async function cancelPact(token: string, pactId: string) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/pacts/${pactId}`,
@@ -197,4 +214,5 @@ export {
   getCheckIn,
   getCheckIns,
   cancelPact,
+  getUserCheckIns,
 };

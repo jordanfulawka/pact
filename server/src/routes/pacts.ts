@@ -9,7 +9,12 @@ import {
   rejectPact,
 } from '../db/pacts';
 import { getUserByUsername } from '../db/users';
-import { checkIn, getCheckInForToday, getCheckIns } from '../db/checkIns';
+import {
+  checkIn,
+  getCheckInForToday,
+  getCheckIns,
+  getCheckInsForUserToday,
+} from '../db/checkIns';
 
 const router = express.Router();
 
@@ -44,6 +49,16 @@ router.post('/', httpAuth, async (req: Request, res: Response) => {
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
+  }
+});
+
+router.get('/checkIns/today', httpAuth, async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id;
+    const result = await getCheckInsForUserToday(userId);
+    res.status(200).json({ result });
+  } catch (err) {
+    res.status(500).json({ error: 'server error' });
   }
 });
 

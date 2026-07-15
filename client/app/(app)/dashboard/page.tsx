@@ -10,23 +10,24 @@ import PendingPactCard from '@/components/PendingPactCard';
 import { useSocket } from '@/contexts/SocketProvider';
 import PactCalendar from '@/components/PactCalendar';
 import { Pact } from '@/lib/types';
+import { getUserCheckIns as apiGetUserCheckIns } from '@/lib/api';
 
 function DashboardPage() {
-  const { user } = useAuth();
+  const { token, user } = useAuth();
   const { socket } = useSocket();
+  const { pacts, pendingPacts } = usePact();
+
   const [showCreatePactModal, setShowCreatePactModal] = useState(false);
   const [selectedPact, setSelectedPact] = useState<Pact | null>(null);
   const [selectedPactID, setSelectedPactID] = useState<string | null>(null);
-  const pactsRowRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
-
   const [canPendingScrollLeft, setCanPendingScrollLeft] = useState(false);
   const [canPendingScrollRight, setCanPendingScrollRight] = useState(false);
+  const [numCheckIns, setNumCheckIns] = useState<number | null>(null);
 
+  const pactsRowRef = useRef<HTMLDivElement>(null);
   const pendingPactsRowRef = useRef<HTMLDivElement>(null);
-
-  const { pacts, pendingPacts } = usePact();
 
   function updateScrollButtons() {
     let el = pactsRowRef.current;
@@ -46,10 +47,6 @@ function DashboardPage() {
     el.scrollBy({ left: direction * el.clientWidth * 0.8, behavior: 'smooth' });
   }
 
-  useEffect(() => {
-    updateScrollButtons();
-  }, [pacts, pendingPacts]);
-
   function emitNewPact(partnerId: string, pactId: string) {
     socket?.emit('pact_created', { partnerId, pactId });
   }
@@ -58,6 +55,23 @@ function DashboardPage() {
     setSelectedPactID(pact.id);
     setSelectedPact(pact);
   }
+
+  useEffect(() => {
+    updateScrollButtons();
+    console.log(pacts);
+    console.log('pacts updated');
+  }, [pacts, pendingPacts]);
+
+  useEffect(() => {
+    async function getUserCheckIns() {
+      if (!token) return;
+      const result = await apiGetUserCheckIns(token);
+      setNumCheckIns(result.result.length);
+    }
+    getUserCheckIns();
+  }, [token, pacts]);
+
+  const progressPercent = ((numCheckIns ?? 0) / pacts.length) * 100;
 
   return (
     <div className='bg-background-primary min-h-screen'>
@@ -71,6 +85,13 @@ function DashboardPage() {
         <h2 className='text-text-primary font-headings text-3xl font-semibold'>
           {user?.name}
         </h2>
+        <div className='h-3 bg-text-tertiary rounded-full flex-1 mx-5 flex flex-start'>
+          <div
+            className='h-3 bg-primary-accent rounded-full transition-[width] duration-700 ease-out'
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+
         <div className='flex items-center gap-5'>
           <button
             className='flex bg-primary-accent rounded-md p-3 text-text-primary font-semibold'
