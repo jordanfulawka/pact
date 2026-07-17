@@ -1,6 +1,7 @@
 'use client';
 
 import CreatePactModal from '@/components/CreatePactModal';
+import AccountDropdown from '@/components/AccountDropdown';
 import { useAuth } from '@/contexts/AuthProvider';
 import PactCard from '@/components/PactCard';
 import { usePact } from '@/contexts/PactProvider';
@@ -25,6 +26,11 @@ function DashboardPage() {
   const [canPendingScrollLeft, setCanPendingScrollLeft] = useState(false);
   const [canPendingScrollRight, setCanPendingScrollRight] = useState(false);
   const [numCheckIns, setNumCheckIns] = useState<number | null>(null);
+  const [showAccountDropdown, setShowAccountDropdown] = useState(false);
+
+  function toggleAccountDropdown() {
+    setShowAccountDropdown((prev) => !prev);
+  }
 
   const pactsRowRef = useRef<HTMLDivElement>(null);
   const pendingPactsRowRef = useRef<HTMLDivElement>(null);
@@ -97,10 +103,18 @@ function DashboardPage() {
           >
             <Plus /> New Pact
           </button>
-          <div className='bg-primary-accent w-12 h-12 rounded-full flex items-center justify-center text-text-primary font-bold'>
+          <div
+            className='bg-primary-accent w-12 h-12 rounded-full flex items-center justify-center text-text-primary relative'
+            onClick={toggleAccountDropdown}
+          >
             {user?.name?.split(' ').map((str) => (
               <span key={str}>{str.charAt(0)}</span>
             ))}
+            {showAccountDropdown && (
+              <div className='absolute top-15 right-0 z-50'>
+                <AccountDropdown />
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -7,6 +7,12 @@ import { Server } from 'socket.io';
 import { socketAuth } from './middlewares/socketAuth';
 import { registerHandlers } from './handlers/socket';
 import { startScheduler } from './jobs/scheduler';
+import type {
+  Request,
+  Response,
+  ErrorRequestHandler,
+  NextFunction,
+} from 'express';
 
 const app = express();
 
@@ -20,6 +26,22 @@ app.use(express.json());
 
 app.use('/api/auth', authRouter);
 app.use('/api/pacts', pactRouter);
+// app.all('*', (req, res, next) => {
+
+//   const err = new Error(`Can't find ${req.originalUrl} on the server`);
+//   err.status = 'fail';
+//   err.statusCode = 404;
+//   next(err);
+// });
+
+// app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+//   err.statusCode = err.statusCode || 500;
+//   err.status = err.status || 'error';
+//   res.status(err.statusCode).json({
+//     status: err.statusCode,
+//     message: err.message,
+//   });
+// });
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
