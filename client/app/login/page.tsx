@@ -6,6 +6,9 @@ import { login as apiLogin, register as apiRegister } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthProvider';
 
+const inputClasses =
+  'p-3.5 bg-background-card w-100 rounded-xl text-text-primary font-semibold border border-text-label/40 transition-colors duration-150 focus:border-primary-accent focus:outline-none focus:ring-2 focus:ring-primary-accent/30';
+
 function LoginPage() {
   const [mode, setMode] = useState<'signup' | 'login'>('login');
   const [name, setName] = useState('');
@@ -54,7 +57,7 @@ function LoginPage() {
       <div className='flex min-h-screen justify-between'>
         <div className='flex-1 flex flex-col max-w-150'>
           <div className='flex items-center gap-4 pl-20 p-5'>
-            <div className='p-2 w-fit bg-primary-accent rounded-lg '>
+            <div className='p-2 w-fit bg-primary-accent rounded-lg'>
               <Handshake color={'yellow'} size={40} />
             </div>
             <h3 className='text-text-primary font-headings text-2xl font-semibold'>
@@ -76,32 +79,30 @@ function LoginPage() {
           </div>
         </div>
 
-        <div className='w-lg flex flex-col '>
-          <div className='flex-1 flex items-end pb-10'>
-            <div className='bg-background-selected w-100 flex rounded-md'>
-              <button
-                onClick={() => setMode('login')}
-                className={`${mode === 'login' ? 'bg-primary-accent' : ''} flex-1 rounded-md p-2`}
-              >
-                Sign in
-              </button>
-              <button
-                onClick={() => setMode('signup')}
-                className={`${mode === 'signup' ? 'bg-primary-accent' : ''} flex-1 rounded-md p-2`}
-              >
-                Create account
-              </button>
-            </div>
+        <div className='w-lg flex flex-col items-center justify-center'>
+          <div className='bg-background-selected w-100 flex rounded-md mb-6'>
+            <button
+              onClick={() => setMode('login')}
+              className={`${mode === 'login' ? 'bg-primary-accent' : ''} flex-1 rounded-md p-2 transition-colors duration-300`}
+            >
+              Sign in
+            </button>
+            <button
+              onClick={() => setMode('signup')}
+              className={`${mode === 'signup' ? 'bg-primary-accent' : ''} flex-1 rounded-md p-2 transition-colors duration-300`}
+            >
+              Create account
+            </button>
           </div>
-          <div className=' flex-3 flex flex-col justify-center pb-30'>
-            <h2 className='text-text-primary font-headings text-2xl font-semibold mb-10'>
+          <div className='flex flex-col'>
+            <h2 className='text-text-primary font-headings text-2xl font-semibold mb-6'>
               {mode === 'signup'
                 ? 'Start your first pact today'
                 : 'Welcome back!'}
             </h2>
             {mode === 'signup' ? (
               <form
-                className='flex flex-col justify-center gap-4'
+                className='flex flex-col justify-center gap-3'
                 onSubmit={handleRegister}
               >
                 <input
@@ -109,46 +110,46 @@ function LoginPage() {
                   placeholder='Your name'
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className='p-4 bg-background-card w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
+                  className={inputClasses}
                 />
                 <input
                   type='text'
                   placeholder='Username'
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className='p-4 bg-background-card w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
+                  className={inputClasses}
                 />
                 <input
                   type='text'
                   placeholder='Email address'
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className='p-4 bg-background-card w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
+                  className={inputClasses}
                 />
                 <input
                   type='password'
                   placeholder='Password'
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className='p-4 bg-background-card w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
+                  className={inputClasses}
                 />
                 <input
                   type='password'
                   placeholder='Confirm password'
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className='p-4 bg-background-card w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
+                  className={inputClasses}
                 />
                 <button
                   type='submit'
-                  className='bg-primary-accent w-100 p-4 rounded-lg mt-8 font-body font-semibold text-text-primary'
+                  className='bg-primary-accent w-100 p-4 rounded-lg mt-4 font-body font-semibold text-text-primary transition-transform duration-150 hover:brightness-110 active:scale-[0.98]'
                 >
                   Create account
                 </button>
               </form>
             ) : (
               <form
-                className='flex flex-col justify-center gap-4'
+                className='flex flex-col justify-center gap-3'
                 onSubmit={handleLogin}
               >
                 <input
@@ -156,18 +157,18 @@ function LoginPage() {
                   placeholder='Email address'
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className='p-4 bg-background-card w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent '
+                  className={inputClasses}
                 />
                 <input
                   type='password'
                   placeholder='Password'
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className='p-4 bg-background-card w-100 rounded-2xl text-text-primary font-semibold border border-text-label focus:border-primary-accent focus:outline focus:outline-primary-accent'
+                  className={inputClasses}
                 />
                 <button
                   type='submit'
-                  className='bg-primary-accent w-100 p-4 rounded-lg mt-8 font-body font-semibold text-text-primary'
+                  className='bg-primary-accent w-100 p-4 rounded-lg mt-4 font-body font-semibold text-text-primary transition-transform duration-150 hover:brightness-110 active:scale-[0.98]'
                 >
                   Sign in
                 </button>
