@@ -12,6 +12,7 @@ import { useSocket } from '@/contexts/SocketProvider';
 import PactCalendar from '@/components/PactCalendar';
 import { Pact } from '@/lib/types';
 import { getUserCheckIns as apiGetUserCheckIns } from '@/lib/api';
+import ProfileModal from '@/components/ProfileModal';
 
 function DashboardPage() {
   const { token, user } = useAuth();
@@ -27,6 +28,7 @@ function DashboardPage() {
   const [canPendingScrollRight, setCanPendingScrollRight] = useState(false);
   const [numCheckIns, setNumCheckIns] = useState<number | null>(null);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   function toggleAccountDropdown() {
     setShowAccountDropdown((prev) => !prev);
@@ -85,6 +87,9 @@ function DashboardPage() {
           onSuccess={emitNewPact}
         />
       )}
+      {showProfileModal && (
+        <ProfileModal onClose={() => setShowProfileModal(false)} />
+      )}
       <div className='flex p-10 items-center justify-between'>
         <h2 className='text-text-primary font-headings text-3xl font-semibold'>
           {user?.name}
@@ -112,7 +117,10 @@ function DashboardPage() {
             ))}
             {showAccountDropdown && (
               <div className='absolute top-15 right-0 z-50'>
-                <AccountDropdown />
+                <AccountDropdown
+                  onProfileClick={() => setShowProfileModal(true)}
+                  onClose={() => setShowAccountDropdown(false)}
+                />
               </div>
             )}
           </div>

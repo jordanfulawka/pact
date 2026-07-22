@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '../lib/types';
-
+import { fetchMe } from '@/lib/api';
 
 interface AuthContextProps {
   token: string | null;
@@ -42,6 +42,15 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     setLoading(false);
   }, []);
+
+  useEffect(() => {
+    if (!token || !user) return;
+    fetchMe(token).then((data) => {
+      setUser((prev) =>
+        prev ? { ...prev, avatar_url: data.avatar_url ?? null } : prev,
+      );
+    });
+  }, [token]);
 
   function login(token: string) {
     localStorage.setItem('token', token);

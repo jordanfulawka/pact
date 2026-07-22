@@ -1,12 +1,18 @@
 import { useAuth } from '@/contexts/AuthProvider';
 import { UserRoundPen, Settings, Bell, MoveRight } from 'lucide-react';
 
-function AccountDropdown() {
+function AccountDropdown({
+  onProfileClick,
+  onClose,
+}: {
+  onProfileClick: () => void;
+  onClose: () => void;
+}) {
   const { user, logout } = useAuth();
 
   return (
     <div
-      className='bg-background-modal border border-text-secondary/50 w-60 rounded-[9px] flex flex-col p-3 gap-1 border border-white/[0.08] shadow-[0_16px_40px_rgba(0,0,0,0.5)]'
+      className='bg-background-modal w-60 rounded-[9px] flex flex-col p-3 gap-1 border border-white/8 shadow-[0_16px_40px_rgba(0,0,0,0.5)] animate-slideUp'
       onClick={(e) => e.stopPropagation()}
     >
       <div className='flex items-center gap-2 shrink px-3 py-2.5'>
@@ -21,9 +27,15 @@ function AccountDropdown() {
         </div>
       </div>
       <hr className='border-t border-text-secondary/20' />
-      <div className='flex items-center gap-2 transition-colors hover:bg-white/5 px-3 py-2.5 rounded-[9px]'>
+      <div
+        className='flex items-center gap-2 transition-colors hover:bg-white/5 px-3 py-2.5 rounded-[9px] cursor-pointer'
+        onClick={() => {
+          onProfileClick();
+          onClose();
+        }}
+      >
         <UserRoundPen size={16} />
-        <p className=' line-through cursor-not-allowed'>Profile</p>
+        <p>Profile</p>
       </div>
       <div className='flex items-center gap-2 transition-colors hover:bg-white/5 px-3 py-2.5 rounded-[9px]'>
         <Settings size={16} />

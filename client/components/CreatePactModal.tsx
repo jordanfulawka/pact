@@ -50,11 +50,11 @@ function CreatePactModal({
 
   return (
     <div
-      className='fixed inset-0 z-50 backdrop-blur-xs flex justify-center items-center'
+      className='fixed inset-0 z-50 backdrop-blur-xs flex justify-center items-center bg-black/80'
       onClick={onClose}
     >
       <div
-        className='w-130 bg-background-modal border border-primary-accent/30 rounded-4xl'
+        className='w-130 bg-background-modal border border-primary-accent/30 rounded-4xl animate-modalIn'
         onClick={(e) => e.stopPropagation()}
       >
         <div className='flex items-center justify-between px-10 py-10'>

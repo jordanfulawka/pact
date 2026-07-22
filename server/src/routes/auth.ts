@@ -2,7 +2,8 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import type { Request, Response } from 'express';
-import { createUser, getUserByEmail } from '../db/users';
+import { createUser, getUserByEmail, getUserById } from '../db/users';
+import { httpAuth } from '../middlewares/httpAuth';
 
 const router = express.Router();
 
@@ -67,6 +68,15 @@ router.post('/login', async (req: Request, res: Response) => {
     }
   } catch (err) {
     res.status(400).json({ error: 'Could not complete login' });
+  }
+});
+
+router.get('/me', httpAuth, async (req: Request, res: Response) => {
+  try {
+    const user = await getUserById((req as any).user.id);
+    res.status(200).json({ user });
+  } catch (err) {
+    res.status(400).json({ error: 'couldnt fetch user data' });
   }
 });
 

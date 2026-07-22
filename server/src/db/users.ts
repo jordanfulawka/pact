@@ -30,4 +30,12 @@ async function getUserByUsername(username: string) {
   return result.rows[0];
 }
 
-export { createUser, getUserByEmail, getUserByUsername };
+async function getUserById(userId: string) {
+  const text = 'SELECT * FROM users WHERE id = $1';
+  const values = [userId];
+
+  const result = await pool.query(text, values);
+  return result.rows[0];
+}
+
+export { createUser, getUserByEmail, getUserByUsername, getUserById };

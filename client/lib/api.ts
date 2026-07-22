@@ -203,6 +203,23 @@ async function cancelPact(token: string, pactId: string) {
   return true;
 }
 
+async function fetchMe(token: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
 export {
   register,
   login,
@@ -215,4 +232,5 @@ export {
   getCheckIns,
   cancelPact,
   getUserCheckIns,
+  fetchMe,
 };
