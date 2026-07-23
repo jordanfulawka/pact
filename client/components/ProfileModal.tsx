@@ -1,13 +1,41 @@
 import { useAuth } from '@/contexts/AuthProvider';
+import { getAvatarUploadUrl, updateAvatarUrl } from '@/lib/api';
 import { X } from 'lucide-react';
+import Image from 'next/image';
 import { useEffect } from 'react';
 
 function ProfileModal({ onClose }: { onClose: () => void }) {
-  const { user } = useAuth();
+  const { token, user, refreshUser } = useAuth();
 
   useEffect(() => {
     console.log(user);
   }, [user]);
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!e.target.files) return;
+    const file = e.target.files[0];
+
+    // get secure URL from our server
+    if (!token) return;
+    const { result } = await getAvatarUploadUrl(token, file.type);
+    console.log(result.key);
+    console.log(result.url);
+    const url = result.url;
+
+    // post image directly to the s3 bucket
+    await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': file.type,
+      },
+      body: file,
+    });
+
+    // post request to my server to store URL to users page
+    const imgURL = result.url.split('?')[0];
+    await updateAvatarUrl(token, imgURL);
+    await refreshUser();
+  }
 
   return (
     <div
@@ -31,17 +59,38 @@ function ProfileModal({ onClose }: { onClose: () => void }) {
           </button>
         </div>
         <div className='flex justify-center py-5'>
-          <div className='bg-primary-accent w-25 h-25 text-3xl font-bold rounded-full flex items-center justify-center text-text-primary'>
-            {user?.name?.split(' ').map((str) => (
-              <span key={str}>{str.charAt(0)}</span>
-            ))}
-          </div>
+          {user?.avatar_url ? (
+            <img
+              src={user.avatar_url}
+              alt={user.name ?? 'avatar'}
+              className='w-25 h-25 rounded-full'
+            />
+          ) : (
+            <div className='bg-primary-accent w-25 h-25 text-3xl font-bold rounded-full flex items-center justify-center text-text-primary'>
+              {user?.name?.split(' ').map((str) => (
+                <span key={str}>{str.charAt(0)}</span>
+              ))}
+            </div>
+          )}
         </div>
         <div className='flex justify-center gap-3 mt-3'>
-          <button className='text-text-primary px-4 py-2.5 text-sm bg-text-tertiary/80 rounded-2xl border border-text-secondary/20'>
-            Upload Photo
-          </button>
-          <button className='text-text-primary/20 px-4 py-2.5 text-sm bg-text-tertiary/20 rounded-2xl border border-text-tertiary'>
+          <label
+            className='text-text-primary px-4 py-2.5 text-sm bg-text-tertiary/80 rounded-2xl border border-text-secondary/20'
+            htmlFor='profile-image-upload'
+          >
+            <span>Upload Photo</span>
+            <input
+              id='profile-image-upload'
+              type='file'
+              className='hidden'
+              accept='image/*'
+              onChange={handleImageUpload}
+            />
+          </label>
+          <button
+            className='text-text-primary/20 px-4 py-2.5 text-sm bg-text-tertiary/20 rounded-2xl border border-text-tertiary'
+            type='button'
+          >
             Remove
           </button>
         </div>

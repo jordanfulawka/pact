@@ -38,4 +38,18 @@ async function getUserById(userId: string) {
   return result.rows[0];
 }
 
-export { createUser, getUserByEmail, getUserByUsername, getUserById };
+async function updateAvatarUrl(userId: string, avatarUrl: string) {
+  const text = 'UPDATE users SET avatar_url = $1 WHERE id = $2 RETURNING *';
+  const values = [avatarUrl, userId];
+
+  const result = await pool.query(text, values);
+  return result.rows[0];
+}
+
+export {
+  createUser,
+  getUserByEmail,
+  getUserByUsername,
+  getUserById,
+  updateAvatarUrl,
+};

@@ -2,7 +2,12 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import type { Request, Response } from 'express';
-import { createUser, getUserByEmail, getUserById } from '../db/users';
+import {
+  createUser,
+  getUserByEmail,
+  getUserById,
+  updateAvatarUrl,
+} from '../db/users';
 import { httpAuth } from '../middlewares/httpAuth';
 
 const router = express.Router();
@@ -77,6 +82,16 @@ router.get('/me', httpAuth, async (req: Request, res: Response) => {
     res.status(200).json({ user });
   } catch (err) {
     res.status(400).json({ error: 'couldnt fetch user data' });
+  }
+});
+
+router.patch('/me/avatar', httpAuth, async (req: Request, res: Response) => {
+  try {
+    const { avatarUrl } = req.body;
+    const user = await updateAvatarUrl((req as any).user.id, avatarUrl);
+    res.status(200).json({ user });
+  } catch (err) {
+    res.status(400).json({ error: 'could not update avatar' });
   }
 });
 

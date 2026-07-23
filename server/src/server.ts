@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import authRouter from './routes/auth';
 import pactRouter from './routes/pacts';
+import presignRouter from './routes/presign';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { socketAuth } from './middlewares/socketAuth';
@@ -26,6 +27,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRouter);
 app.use('/api/pacts', pactRouter);
+app.use('/api/presign', presignRouter);
 // app.all('*', (req, res, next) => {
 
 //   const err = new Error(`Can't find ${req.originalUrl} on the server`);

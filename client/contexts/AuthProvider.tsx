@@ -10,6 +10,7 @@ interface AuthContextProps {
   login: (token: string) => void;
   logout: () => void;
   loading: boolean;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps | null>(null);
@@ -43,13 +44,17 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
+  async function refreshUser() {
+    if (!token) return;
+    const data = await fetchMe(token);
+    setUser((prev) =>
+      prev ? { ...prev, avatar_url: data.user.avatar_url ?? null } : prev,
+    );
+  }
+
   useEffect(() => {
     if (!token || !user) return;
-    fetchMe(token).then((data) => {
-      setUser((prev) =>
-        prev ? { ...prev, avatar_url: data.avatar_url ?? null } : prev,
-      );
-    });
+    refreshUser();
   }, [token]);
 
   function login(token: string) {
@@ -65,7 +70,9 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ token, user, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{ token, user, login, logout, loading, refreshUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

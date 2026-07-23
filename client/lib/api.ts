@@ -220,6 +220,44 @@ async function fetchMe(token: string) {
   return response.json();
 }
 
+async function getAvatarUploadUrl(token: string, contentType: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/presign/avatar`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ contentType }),
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
+async function updateAvatarUrl(token: string, avatarUrl: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/auth/me/avatar`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ avatarUrl }),
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
 export {
   register,
   login,
@@ -233,4 +271,6 @@ export {
   cancelPact,
   getUserCheckIns,
   fetchMe,
+  getAvatarUploadUrl,
+  updateAvatarUrl,
 };
