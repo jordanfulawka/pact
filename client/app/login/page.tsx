@@ -20,7 +20,7 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
-  const { login, logout, user } = useAuth();
+  const { login, user } = useAuth();
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();

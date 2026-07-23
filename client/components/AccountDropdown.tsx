@@ -1,5 +1,6 @@
 import { useAuth } from '@/contexts/AuthProvider';
 import { UserRoundPen, Settings, Bell, MoveRight } from 'lucide-react';
+import Image from 'next/image';
 
 function AccountDropdown({
   onProfileClick,
@@ -16,11 +17,21 @@ function AccountDropdown({
       onClick={(e) => e.stopPropagation()}
     >
       <div className='flex items-center gap-2 shrink px-3 py-2.5'>
-        <div className='bg-primary-accent w-10 h-10 flex justify-center items-center rounded-full '>
-          {user?.name?.split(' ').map((str) => (
-            <span key={str}>{str.charAt(0)}</span>
-          ))}
-        </div>
+        {user?.avatar_url ? (
+          <Image
+            src={user.avatar_url}
+            alt={user.name ?? 'avatar'}
+            width={48}
+            height={48}
+            className='w-12 h-12 rounded-full'
+          />
+        ) : (
+          <div className='bg-primary-accent w-10 h-10 flex justify-center items-center rounded-full '>
+            {user?.name?.split(' ').map((str) => (
+              <span key={str}>{str.charAt(0)}</span>
+            ))}
+          </div>
+        )}
         <div className='flex flex-col leading-tight'>
           <p className=''>{user?.name}</p>
           <p className='text-sm text-text-secondary/70'>{user?.email}</p>

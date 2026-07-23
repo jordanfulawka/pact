@@ -60,9 +60,11 @@ function ProfileModal({ onClose }: { onClose: () => void }) {
         </div>
         <div className='flex justify-center py-5'>
           {user?.avatar_url ? (
-            <img
+            <Image
               src={user.avatar_url}
               alt={user.name ?? 'avatar'}
+              width={100}
+              height={100}
               className='w-25 h-25 rounded-full'
             />
           ) : (

@@ -13,6 +13,7 @@ import PactCalendar from '@/components/PactCalendar';
 import { Pact } from '@/lib/types';
 import { getUserCheckIns as apiGetUserCheckIns } from '@/lib/api';
 import ProfileModal from '@/components/ProfileModal';
+import Image from 'next/image';
 
 function DashboardPage() {
   const { token, user } = useAuth();
@@ -109,12 +110,24 @@ function DashboardPage() {
             <Plus /> New Pact
           </button>
           <div
-            className='bg-primary-accent w-12 h-12 rounded-full flex items-center justify-center text-text-primary relative'
+            className='flex items-center justify-center text-text-primary relative'
             onClick={toggleAccountDropdown}
           >
-            {user?.name?.split(' ').map((str) => (
-              <span key={str}>{str.charAt(0)}</span>
-            ))}
+            {user?.avatar_url ? (
+              <Image
+                src={user.avatar_url}
+                alt={user.name ?? 'avatar'}
+                width={48}
+                height={48}
+                className='w-12 h-12 rounded-full'
+              />
+            ) : (
+              <div className='bg-primary-accent w-12 h-12 rounded-full flex justify-center items-center'>
+                {user?.name?.split(' ').map((str) => (
+                  <span key={str}>{str.charAt(0)}</span>
+                ))}
+              </div>
+            )}
             {showAccountDropdown && (
               <div className='absolute top-15 right-0 z-50'>
                 <AccountDropdown
